@@ -6,6 +6,8 @@
 | Canvas philosophy + .pdf/.png | tools/canvas.py | canvas-design | Visual art only, not web |
 | Web a11y/perf/responsive audit | checks/guideline.py + tools/web_guidelines.py | web-design-guidelines | Audit only, no token gen |
 | Data validation | tools/validate_data.py | ui-ux-pro-max | Data integrity |
+| Motion philosophy (WHY) | references/motion-philosophy/ | LottieFiles/motion-design-skill | Philosophy layer, not code |
+| Motion library patterns (HOW-Motion) | references/motion-library/ | motiondivision/ai-kit | Motion/Framer Motion specific, not GSAP |
 
 **Rule:** One capability → one owner. No tool appears in 2 places. References hold docs only.
 
