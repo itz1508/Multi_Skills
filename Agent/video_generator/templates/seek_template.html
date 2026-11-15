@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>seek(t) Motion Template</title>
+<style>
+  :root { --bg: #0d0b08; --fg: #f5ede0; --accent: #3dbfae; }
+  * { margin: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; display: grid; place-items: center; }
+  #container { width: 200px; height: 200px; border-radius: 24px; background: var(--accent); }
+</style></head><body>
+<div id="stage"><div id="container"></div></div>
+<script>
+  // === RENDER CONTRACT ===
+  // seek(t) paints frame t. No Math.random, timer APIs, or CSS transitions.
+  // Seeded noise only. Deterministic: same t → same pixels.
+
+  const DURATION = 15; // seconds
+  const container = document.getElementById('container');
+
+  // Closed-form spring (pure function of time)
+  function spring(t, tension = 0.4, friction = 0.6) {
+    // Damped harmonic oscillator: returns 0→1→~1 with overshoot
+    const w = Math.sqrt(tension);
+    return 1 - Math.exp(-friction * t) * Math.cos(w * t);
+  }
+
+  // State list: each beat has entry/exit state and purpose
+  const BEATS = [
+    { t: 0,  w: 200, h: 200, r: 24,  c: '#3dbfae', label: 'HOOK' },
+    { t: 2,  w: 300, h: 300, r: 32,  c: '#e8702a', label: 'PROBLEM' },
+    { t: 5,  w: 250, h: 250, r: 999, c: '#e63946', label: 'REVEAL' },
+    { t: 9,  w: 350, h: 200, r: 16,  c: '#1a9e6e', label: 'PROOF' },
+    { t: 13, w: 200, h: 200, r: 24,  c: '#3dbfae', label: 'CLOSE' },
+  ];
+
+  function seek(t) {
+    // Find current and next beat
+    let current = BEATS[0], next = BEATS[BEATS.length - 1];
+    for (let i = 0; i < BEATS.length; i++) {
+      if (BEATS[i].t <= t && (i === BEATS.length - 1 || BEATS[i + 1].t > t)) {
+        current = BEATS[i];
+        next = BEATS[Math.min(i + 1, BEATS.length - 1)];
+        break;
+      }
+    }
+
+    // Interpolate with spring
+    const progress = next.t > current.t 
+      ? spring(Math.min((t - current.t) / (next.t - current.t), 1))
+      : 1;
+
+    container.style.width  = (current.w + (next.w - current.w) * progress) + 'px';
+    container.style.height = (current.h + (next.h - current.h) * progress) + 'px';
+    container.style.borderRadius = Math.min(current.r + (next.r - current.r) * progress, 999) + 'px';
+    container.style.background = current.c; // Hold color, morph on next beat
+  }
+
+  // Expose for Playwright
+  window.seek = seek;
+  window.DURATION = DURATION;
+</script>
+</body></html>

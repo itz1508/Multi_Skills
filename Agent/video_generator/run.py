@@ -2,6 +2,7 @@
 
 Run: uv run --no-sync python -m agent.skills.video_generator.run <repository-root>
 Belt: belt login && belt app run google/veo-3-1-fast --input '{"prompt":"..."}'
+Motion: python -m agent.skills.video_generator.run <repo> --mode motion --brief brief.md
 """
 
 from __future__ import annotations
@@ -14,17 +15,32 @@ from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage: python -m agent.skills.video_generator.run <repository-root>")
+        print("Usage: python -m agent.skills.video_generator.run <repository-root> [--mode belt|motion]")
         sys.exit(1)
     repo_root = Path(sys.argv[1])
     if not repo_root.exists():
         print(f"Repository root not found: {repo_root}")
         sys.exit(1)
-    print("Video Generator skill — 40+ models via belt CLI")
-    print(f"Repository root: {repo_root}")
-    print("Run `belt app list --category video` to browse models")
-    # Dispatch is host-driven; this CLI is for local inspection only
-    print("Use: belt app run <app-id> --input '<json>'")
+
+    mode = "belt"
+    if "--mode" in sys.argv:
+        idx = sys.argv.index("--mode")
+        if idx + 1 < len(sys.argv):
+            mode = sys.argv[idx + 1]
+
+    if mode == "belt":
+        print("Video Generator skill — belt mode — 40+ models via belt CLI")
+        print(f"Repository root: {repo_root}")
+        print("Run `belt app list --category video` to browse models")
+        print("Use: belt app run <app-id> --input '<json>'")
+    elif mode == "motion":
+        print("Video Generator skill — motion mode — seek(t) deterministic pipeline")
+        print(f"Repository root: {repo_root}")
+        print("Pipeline: HTML seek(t) → Playwright frames → ffmpeg encode")
+        print("Templates: brief.md, style_guide.md, shotlist.md, seek_template.html")
+    else:
+        print(f"Unknown mode: {mode}. Use 'belt' or 'motion'.")
+        sys.exit(1)
 
 
 # --- PRE/POST dispatch for Runtime integration ---
@@ -39,7 +55,9 @@ def pre_dispatch(request: HostDispatchEnvelope) -> HostDispatchEnvelope:
     enriched = request.model_copy(
         update={
             "information_needed": (
-                request.information_needed + " | video_scope: belt_app_execution_text_image_avatar_edit_upscale_foley"
+                request.information_needed
+                + " | video_scope: belt_app_execution_text_image_avatar_edit_upscale_foley"
+                + " | motion_scope: seek_t_playwright_ffmpeg_librosa_whisperx_openverse"
             )
         }
     )

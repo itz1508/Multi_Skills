@@ -13,7 +13,8 @@ import json
 import uuid
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 
 from agent.skills.particle_vfx.tools.schema import (
     BehaviorType,
@@ -30,19 +31,24 @@ def _uuid() -> str:
 
 # ─── Value Functions ───
 
-class ConstantValue(BaseModel):
+class _QuarksBase(BaseModel):
+    """Base model — emits camelCase JSON keys matching three.quarks schema."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class ConstantValue(_QuarksBase):
     """Single constant value."""
     type: str = Field(default=ValueType.CONSTANT_VALUE.value)
     value: float
 
 
-class ConstantColor(BaseModel):
+class ConstantColor(_QuarksBase):
     """Single constant RGBA color."""
     type: str = Field(default=ValueType.CONSTANT_COLOR.value)
     color: dict[str, float] = Field(default_factory=lambda: {"r": 1.0, "g": 1.0, "b": 1.0, "a": 1.0})
 
 
-class IntervalValue(BaseModel):
+class IntervalValue(_QuarksBase):
     """Random value between min and max."""
     type: str = Field(default=ValueType.INTERVAL_VALUE.value)
     a: float = 0.0
@@ -51,12 +57,12 @@ class IntervalValue(BaseModel):
 
 # ─── Emitter Shapes ───
 
-class PointShape(BaseModel):
+class PointShape(_QuarksBase):
     type: str = Field(default=ShapeType.POINT.value)
     radius: float = 0.0
 
 
-class ConeShape(BaseModel):
+class ConeShape(_QuarksBase):
     type: str = Field(default=ShapeType.CONE.value)
     radius: float = 10.0
     arc: float = 6.283185307179586
@@ -64,7 +70,7 @@ class ConeShape(BaseModel):
     angle: float = 0.5235987755982988
 
 
-class SphereShape(BaseModel):
+class SphereShape(_QuarksBase):
     type: str = Field(default=ShapeType.SPHERE.value)
     radius: float = 10.0
     arc: float = 6.283185307179586
@@ -74,14 +80,14 @@ class SphereShape(BaseModel):
     speed: dict[str, Any] | None = None
 
 
-class MeshSurfaceShape(BaseModel):
+class MeshSurfaceShape(_QuarksBase):
     type: str = Field(default=ShapeType.MESH_SURFACE.value)
     geometry: str  # uuid reference to geometry in geometries array
 
 
 # ─── Behaviors ───
 
-class Behavior(BaseModel):
+class Behavior(_QuarksBase):
     """Base behavior — type field identifies the behavior."""
     type: str  # BehaviorType value
 
@@ -94,7 +100,7 @@ class EmitSubParticleSystemBehavior(Behavior):
 
 # ─── Particle System Config (the 'ps' object) ───
 
-class ParticleSystemConfig(BaseModel):
+class ParticleSystemConfig(_QuarksBase):
     """Particle system configuration — the 'ps' field on a ParticleEmitter node."""
     version: str = "3.0"
     auto_destroy: bool = False
@@ -132,7 +138,7 @@ class ParticleSystemConfig(BaseModel):
 
 # ─── Three.js ObjectLoader Compatible Nodes ───
 
-class ParticleEmitterNode(BaseModel):
+class ParticleEmitterNode(_QuarksBase):
     """A ParticleEmitter node in the Three.js object tree."""
     uuid: str = Field(default_factory=_uuid)
     type: str = "ParticleEmitter"
@@ -142,7 +148,7 @@ class ParticleEmitterNode(BaseModel):
     ps: ParticleSystemConfig
 
 
-class QuarksPrefabNode(BaseModel):
+class QuarksPrefabNode(_QuarksBase):
     """A QuarksPrefab node — unified timeline for Three.js + particle animations."""
     uuid: str = Field(default_factory=_uuid)
     type: str = "QuarksPrefab"
@@ -152,7 +158,7 @@ class QuarksPrefabNode(BaseModel):
     animation_data: list[dict[str, Any]] = Field(default_factory=list)
 
 
-class AnimationDataEntry(BaseModel):
+class AnimationDataEntry(_QuarksBase):
     """An entry in the QuarksPrefab animationData timeline."""
     start_time: float = 0
     duration: float = 1
@@ -164,7 +170,7 @@ class AnimationDataEntry(BaseModel):
 
 # ─── Geometry / Material / Texture helpers ───
 
-class PlaneGeometry(BaseModel):
+class PlaneGeometry(_QuarksBase):
     uuid: str = Field(default_factory=_uuid)
     type: str = "PlaneGeometry"
     width: float = 1
@@ -173,13 +179,13 @@ class PlaneGeometry(BaseModel):
     height_segments: int = 1
 
 
-class MeshBasicMaterial(BaseModel):
+class MeshBasicMaterial(_QuarksBase):
     uuid: str = Field(default_factory=_uuid)
     type: str = "MeshBasicMaterial"
     color: int = 16777215
 
 
-class TextureRef(BaseModel):
+class TextureRef(_QuarksBase):
     uuid: str = Field(default_factory=_uuid)
     name: str = "./textures/texture1.png"
     image: str  # uuid of image
@@ -190,14 +196,14 @@ class TextureRef(BaseModel):
     format: int = 1023
 
 
-class ImageRef(BaseModel):
+class ImageRef(_QuarksBase):
     uuid: str = Field(default_factory=_uuid)
     url: str = ""
 
 
 # ─── Top-Level Effect Document ───
 
-class QuarksEffect(BaseModel):
+class QuarksEffect(_QuarksBase):
     """Top-level three.quarks effect document — Three.js ObjectLoader compatible."""
     metadata: dict[str, Any] = Field(default_factory=lambda: {
         "version": 4.6,
@@ -218,11 +224,11 @@ class QuarksEffect(BaseModel):
 
     def to_json(self) -> str:
         """Export to JSON string compatible with QuarksLoader.parse()."""
-        return json.dumps(self.model_dump(), indent=2)
+        return json.dumps(self.model_dump(by_alias=True), indent=2)
 
     def to_dict(self) -> dict[str, Any]:
         """Export to dict."""
-        return self.model_dump()
+        return self.model_dump(by_alias=True)
 
 
 # ─── Builder Factory Functions ───
@@ -267,11 +273,11 @@ def build_simple_effect(
         duration=duration,
         looping=looping,
         world_space=world_space,
-        shape=shape or ConeShape().model_dump(),
-        start_life=ConstantValue(value=start_life).model_dump(),
-        start_speed=ConstantValue(value=start_speed).model_dump(),
-        start_size=ConstantValue(value=start_size).model_dump(),
-        emission_over_time=ConstantValue(value=emission_rate).model_dump(),
+        shape=shape or ConeShape().model_dump(by_alias=True),
+        start_life=ConstantValue(value=start_life).model_dump(by_alias=True),
+        start_speed=ConstantValue(value=start_speed).model_dump(by_alias=True),
+        start_size=ConstantValue(value=start_size).model_dump(by_alias=True),
+        emission_over_time=ConstantValue(value=emission_rate).model_dump(by_alias=True),
         instancing_geometry=geo_uuid,
         texture=tex_uuid,
     )
@@ -279,11 +285,11 @@ def build_simple_effect(
     emitter = ParticleEmitterNode(ps=ps_config)
 
     effect = QuarksEffect(
-        geometries=[geometry.model_dump()],
-        textures=[texture.model_dump()],
-        images=[image.model_dump()],
+        geometries=[geometry.model_dump(by_alias=True)],
+        textures=[texture.model_dump(by_alias=True)],
+        images=[image.model_dump(by_alias=True)],
     )
-    effect.object["children"] = [emitter.model_dump()]
+    effect.object["children"] = [emitter.model_dump(by_alias=True)]
 
     return effect
 
@@ -309,8 +315,8 @@ def build_prefab_effect(
     Returns:
         QuarksEffect with QuarksPrefab root node.
     """
-    children = [e.model_dump() for e in emitters]
-    anim_data = [a.model_dump() for a in (animation_entries or [])]
+    children = [e.model_dump(by_alias=True) for e in emitters]
+    anim_data = [a.model_dump(by_alias=True) for a in (animation_entries or [])]
 
     prefab = QuarksPrefabNode(
         children=children,
@@ -323,7 +329,7 @@ def build_prefab_effect(
         textures=textures or [],
         images=images or [],
     )
-    effect.object = prefab.model_dump()
+    effect.object = prefab.model_dump(by_alias=True)
 
     return effect
 
