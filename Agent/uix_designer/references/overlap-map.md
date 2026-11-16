@@ -8,6 +8,11 @@
 | Data validation | tools/validate_data.py | ui-ux-pro-max | Data integrity |
 | Motion philosophy (WHY) | references/motion-philosophy/ | LottieFiles/motion-design-skill | Philosophy layer, not code |
 | Motion library patterns (HOW-Motion) | references/motion-library/ | motiondivision/ai-kit | Motion/Framer Motion specific, not GSAP |
+| GSAP timeline & scroll patterns | references/motion-library/gsap-timelines.md | greensock/GSAP | Timeline/ScrollTrigger, not Motion/Framer |
+| Lottie playback & AE handoff | references/motion-library/lottie-web.md | airbnb/lottie-web | Designer handoff format, not code animation |
+| Burst & shape motion graphics | references/motion-library/mojs-bursts.md | mojs/mojs | Burst/shape style, not UI transitions |
+| 2D web particles (DOM/Canvas) | references/2d-web-particles.md | tsparticles/tsparticles | 2D DOM/Canvas, not 3D three.quarks |
+| Explainer video creation | references/motion-canvas.md | motion-canvas/motion-canvas | Educational explainers, not general video |
 
 **Rule:** One capability → one owner. No tool appears in 2 places. References hold docs only.
 
