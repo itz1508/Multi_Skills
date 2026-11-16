@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>video_generator — seek(t) pipeline motion</title>
+<style>
+:root{--bg:#07061a;--pn:#110f2b;--ln:#2a2658;--tx:#ece8ff;--mu:#9a93c4;
+--c1:#00a6d6;--c2:#7b4dff;--c3:#e2308f;--c4:#e08a00;--ok:#0f9a68;--bad:#d6335a;--unk:#b86f00;
+--sans:system-ui,sans-serif;--mono:ui-monospace,monospace}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.55 var(--sans);overflow:hidden}
+.node{display:inline-grid;place-items:center;width:88px;height:88px;border-radius:50%;
+border:3px solid var(--c1);font:700 14px var(--sans);margin:16px;text-align:center}
+.pipe{display:flex;align-items:center;gap:8px;padding:16px;flex-wrap:wrap}
+.arrow{color:var(--mu);font-size:20px}
+#eph{display:flex;flex-direction:column;gap:6px;margin:16px}
+.call{display:flex;align-items:center;gap:8px;padding:5px 13px;border-radius:99px;
+font:12px var(--mono);border:1.5px solid var(--c1);background:var(--pn)}
+.call.done{border-color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:16px;max-width:1100px}
+.cell{height:68px;border:1px solid var(--ln);display:grid;place-items:center;
+font:13px var(--mono);color:var(--mu);transition:border-color .2s}
+.cell.filled{border-width:2px;font-weight:700}
+.score{display:inline-flex;align-items:center;gap:8px;margin:4px 0;
+font:14px var(--mono);padding:3px 12px;border-radius:13px;border:2px solid var(--ok)}
+.score.warn{border-color:var(--bad)}
+.gate{margin:16px;padding:14px;border-radius:20px;border:1.5px solid var(--unk)}
+.stamp{display:inline-block;font:700 24px var(--sans);color:var(--ok);
+border:2px solid var(--ok);padding:4px 16px;border-radius:8px;transform:rotate(-4deg);margin:16px}
+</style></head><body>
+<div class="pipe">
+<div class="node" style="border-color:var(--c1)">seek(t)<br><small style="color:var(--mu)">HTML</small></div>
+<span class="arrow">→</span>
+<div class="node" style="border-color:var(--c2)">Playwright<br><small style="color:var(--mu)">render</small></div>
+<span class="arrow">→</span>
+<div class="node" style="border-color:var(--c3)">frames<br><small style="color:var(--mu)">PNG</small></div>
+<span class="arrow">→</span>
+<div class="node" style="border-color:var(--c4)">ffmpeg<br><small style="color:var(--mu)">encode</small></div>
+</div>
+<div id="eph">
+<div class="call done"><b>✓ render</b><span style="color:var(--mu)">· seek.html loaded</span></div>
+<div class="call done"><b>✓ capture</b><span style="color:var(--mu)">· frame_0001.png</span></div>
+<div class="call done"><b>✓ encode</b><span style="color:var(--mu)">· h264 · crf 18</span></div>
+</div>
+<div style="margin:16px"><b style="color:var(--c2)">Deterministic frame rendering</b></div>
+<div class="grid" id="grid"></div>
+<div style="margin:16px"><b style="color:var(--c3)">Critic evaluation</b></div>
+<div style="margin-left:16px">
+<div class="score">hook_in_2s: 9</div>
+<div class="score warn">phone_readability: 7</div>
+<div class="score">motion_quality: 8</div>
+<div class="score">variety: 8</div>
+<div class="score warn">sound_sync: 5</div>
+<div class="score">brand_accuracy: 9</div>
+</div>
+<div class="gate"><b style="color:var(--unk)">QUALITY GATE</b>
+<div style="border-left:4px solid var(--ok);padding:8px;margin:4px 0">✓ hook_in_2s >= 8 — MET</div>
+<div style="border-left:4px solid var(--ok);padding:8px;margin:4px 0">✓ determinism verified — MET</div>
+<div style="border-left:4px solid var(--bad);padding:8px;margin:4px 0">✕ sound_sync >= 6 — FAIL</div>
+</div>
+<div class="stamp">✓ DETERMINISTIC</div>
+<script>
+// seek(t) — deterministic render function for Playwright capture
+function seek(t){
+  // Phase 1 (0-2s): pipeline nodes appear
+  // Phase 2 (2-5s): frame grid fills deterministically
+  // Phase 3 (5-8s): critic scores + gate + stamp
+  const grid = document.getElementById('grid')
+  if(grid.children.length === 0){
+    for(let i=0;i<24;i++){
+      const c = document.createElement('div')
+      c.className = 'cell'
+      c.textContent = `f_${String(i+1).padStart(3,'0')}`
+      grid.appendChild(c)
+    }
+  }
+  const cells = grid.children
+  const grid_t = Math.max(0, t - 2.0)
+  for(let i=0;i<cells.length;i++){
+    const fill_t = grid_t - i * 0.08
+    if(fill_t > 0){
+      cells[i].classList.add('filled')
+      const hue = (i * 137) % 360
+      const col = `hsl(${hue},70%,60%)`
+      cells[i].style.borderColor = col
+      cells[i].style.color = col
+    }
+  }
+}
+window.seek = seek
+// Initialize grid
+seek(0)
+</script>
+</body></html>

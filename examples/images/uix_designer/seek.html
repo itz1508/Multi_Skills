@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>UIX Designer — seek(t) motion</title>
+<style>
+:root{--bg:#0d0b08;--pn:#1a1612;--ln:#332d22;--tx:#f5ede0;--mu:#a89880;
+--c1:#f4934a;--c2:#3dbfae;--c3:#ff6b76;--c4:#d4a73e;--ok:#2dbf8e;--bad:#ff6b6b;--unk:#e0a050;
+--sans:system-ui,sans-serif;--mono:ui-monospace,monospace}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.55 var(--sans);overflow:hidden}
+.proc{display:grid;grid-template-columns:104px 1fr;gap:14px;padding:12px;border-radius:20px;
+border:1.5px solid transparent;background:linear-gradient(var(--pn),var(--pn)) padding-box,
+linear-gradient(135deg,var(--c1),var(--c2),var(--c3)) border-box;margin:16px}
+#orb{width:104px;height:104px;border-radius:50%;background:radial-gradient(#1d1558,#07061a);
+box-shadow:0 0 30px color-mix(in oklab,var(--c2) 40%,transparent)}
+.sh{height:3px;border-radius:2px;background:var(--ln);overflow:hidden;margin:7px 0}
+.sh:after{content:"";display:block;height:100%;width:35%;
+background:linear-gradient(90deg,transparent,var(--c1),var(--c3),transparent);
+animation:sl 1.3s ease-in-out infinite}
+@keyframes sl{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+.trk{display:flex;justify-content:space-between;margin-top:10px}
+.tn{display:grid;justify-items:center;gap:3px;font-size:11px;color:var(--mu)}
+.tn i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+font:700 11px var(--sans);font-style:normal;border:2px solid var(--ln);background:var(--pn)}
+.tn.on{color:var(--tx)}.tn.on i{border-color:var(--c1);box-shadow:0 0 14px var(--c1)}
+#eph{display:flex;flex-direction:column;gap:6px;margin:16px}
+.call{display:flex;align-items:center;gap:8px;padding:5px 13px 5px 9px;border-radius:99px;
+font:12px var(--mono);background:var(--pn);
+border:1.5px solid var(--c1);animation:pop .35s backwards}
+.call.done{border-color:var(--ok)}.call.skip{border-color:var(--unk)}
+.call .sp2{width:13px;height:13px;border-radius:50%;border:2px solid currentColor;
+border-top-color:transparent;animation:spn .7s linear infinite}
+.call.done .sp2{animation:none;background:var(--ok);border-color:var(--ok)}
+.ans{margin:16px;line-height:1.65;font-size:16px}
+.cur:after{content:"▍";color:var(--c1);animation:bk .8s steps(2) infinite}
+@keyframes bk{50%{opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+@keyframes spn{to{transform:rotate(360deg)}}
+.gate{margin:16px;padding:14px 16px;border-radius:20px;
+border:1.5px solid var(--unk)}
+.gate.ok{border-color:var(--ok)}
+.gc{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;
+padding:8px 10px;border-radius:12px;border:1px solid var(--ln);border-left:4px solid var(--unk);
+margin:4px 0}
+.gc.met{border-left-color:var(--ok)}
+</style></head><body>
+<div class="proc">
+<div id="orb"></div>
+<div>
+<b style="font-size:14px;color:var(--c1)">Thinking mode: analyzing input...</b>
+<div class="sh"></div>
+<div class="trk">
+<div class="tn on"><i>1</i><span>read</span></div>
+<div class="tn on"><i>2</i><span>hash</span></div>
+<div class="tn on"><i>3</i><span>compare</span></div>
+<div class="tn on"><i>4</i><span>verify</span></div>
+<div class="tn"><i>5</i><span>report</span></div>
+</div></div></div>
+<div id="eph">
+<div class="call done"><i class="sp2">✓</i><b style="color:var(--ok)">hook</b><span>· read_file · file1.txt</span></div>
+<div class="call done"><i class="sp2">✓</i><b style="color:var(--ok)">tool</b><span>· sha256 · compute hash</span></div>
+<div class="call skip"><i class="sp2">↷</i><b style="color:var(--unk)">hook</b><span>· compare · file2.md</span></div>
+</div>
+<div class="ans">SHA-256 verification complete.<br>file1.txt matches file2.md.<br>Evidence packet generated.<span class="cur"></span></div>
+<div class="gate">
+<b style="color:var(--unk)">VERIFICATION GATE</b>
+<div class="gc met"><i>✓</i><span>Source files read</span><b style="color:var(--ok)">MET</b></div>
+<div class="gc met"><i>✓</i><span>SHA-256 computed</span><b style="color:var(--ok)">MET</b></div>
+<div class="gc"><i>⚠</i><span>Timestamp check</span><b style="color:var(--unk)">STALE</b></div>
+</div>
+<script>
+// seek(t) — deterministic render function for Playwright capture
+// Must be a pure function of t (no Math.random, no setTimeout)
+function seek(t){
+  // Phase 1 (0-2s): thinking mode — orb, shimmer, track nodes
+  // Phase 2 (2-5s): ephemeral calls appear with status transitions
+  // Phase 3 (5-8s): content streams char-by-char with blinking cursor
+  document.querySelectorAll('.tn').forEach((n,i)=>{
+    n.classList.toggle('on', t > 0.5 + i * 0.3)
+  })
+  document.querySelectorAll('.call').forEach((c,i)=>{
+    const start = 2.0 + i * 1.0
+    if(t >= start + 0.8) c.className = c.className.includes('skip') ? 'call skip' : 'call done'
+  })
+}
+window.seek = seek
+</script>
+</body></html>
