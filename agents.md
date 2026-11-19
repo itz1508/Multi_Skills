@@ -171,6 +171,7 @@ and record the source revision when available.
 | UI/UX research and design | `Agent/uix_designer/SKILL.md` |
 | Video work | `Agent/video_generator/SKILL.md` |
 | Inspect/recover a knowledge index | `Agent/wiki-build/SKILL.md` |
+| Prepare a technical reference and independently rebuild a portable capability | `Agent/pre-write/SKILL.md` |
 | Session handoff | `Agent/handoff/SKILL.md` |
 
 </details>

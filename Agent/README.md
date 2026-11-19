@@ -9,6 +9,7 @@
 | Handoff | [handoff/SKILL.md](handoff/SKILL.md) | Prepare and resume a bounded session handoff |
 | Cross Linker | [cross-linker/SKILL.md](cross-linker/SKILL.md) | Identify evidence-backed links and duplicate references |
 | Memory Bridge | [memory-bridge/SKILL.md](memory-bridge/SKILL.md) | Compare provenance of existing records |
+| Pre-Write | [pre-write/SKILL.md](pre-write/SKILL.md) | Reconstruct references, run a faithful sample, diagnose weaknesses, and independently rebuild a portable capability |
 | Session Search | [session-search/SKILL.md](session-search/SKILL.md) | Retrieve original sessions and bounded source excerpts |
 | Wiki Build | [wiki-build/SKILL.md](wiki-build/SKILL.md) | Inspect or explicitly authorized recovery of an existing knowledge store |
 | UIX Designer | [uix_designer/SKILL.md](uix_designer/SKILL.md) | Independent UI/UX design reference data and tools |
@@ -17,6 +18,7 @@
 ## Boundaries
 
 - Every skill has its own purpose and supporting files. None establishes a new workflow stage or grants approval, source-write, or Runtime privileges.
+- The pre-write skill is an instruction-only, host-independent process. It does not install dependencies, run arbitrary upstream code, or claim that every host can load Agent Skills without an adapter.
 - Existing UIX and video Python source files are preserved as distributed. They reference dependencies from their consuming project; this repository does not independently install or verify those dependencies.
 - The dated [handoff example](handoff/CURRENT_HANDOFF.md) is historical context, not the current state of any target repository.
 - Before invoking a skill, inspect the actual target project's instructions, source, access permissions, and dependencies.
