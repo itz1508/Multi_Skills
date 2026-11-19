@@ -13,7 +13,7 @@ All eight skill packages are under [`Agent/`](Agent/README.md):
 | [session-search](Agent/session-search/SKILL.md) | Retrieve previous decisions from existing authorized sources |
 | [wiki-build](Agent/wiki-build/SKILL.md) | Inspect and safely recover an existing wiki or knowledge index |
 | [uix_designer](Agent/uix_designer/SKILL.md) | UI/UX design resources, tools, checks, and references |
-| [video_generator](Agent/video_generator/SKILL.md) | Video production resources, tools, and checks |
+| [video_generator](Agent/video_generator/SKILL.md) | Video production resources, tools, checks, and references |
 
 **Boundary:** These skills are distributed independently; no Audit Discovery matrix, Research/Planning/Builder workflow role, Executor/Sandbox runtime package, or project-specific stage orchestration is included.
 
