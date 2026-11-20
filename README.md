@@ -9,7 +9,7 @@ All eight skill packages are under [`Agent/`](Agent/README.md):
 | [handoff](Agent/handoff/SKILL.md) | Transfer session context into an evidence-grounded, portable handoff |
 | [cross-linker](Agent/cross-linker/SKILL.md) | Identify and classify relationships across existing records |
 | [memory-bridge](Agent/memory-bridge/SKILL.md) | Compare memory and knowledge provenance |
-| [pre-write](Agent/pre-write/SKILL.md) | Reconstruct technical references, diagnose weaknesses, and independently rebuild portable capabilities before implementation |
+| [pre-write](Agent/pre-write/SKILL.md) | Reconstruct technical references, independently rebuild portable capabilities, and produce a credential-free, SDK-first Agent Implementation Pack |
 | [session-search](Agent/session-search/SKILL.md) | Retrieve previous decisions from existing authorized sources |
 | [wiki-build](Agent/wiki-build/SKILL.md) | Inspect and safely recover an existing wiki or knowledge index |
 | [uix_designer](Agent/uix_designer/SKILL.md) | UI/UX design resources, tools, checks, and references |

@@ -43,6 +43,8 @@ Do not use merely to summarize an article, answer a conceptual question, or refa
 - **Keep external API names correct:** do not rename public SDK classes, methods, decorators, parameters, or wire fields when doing so would break execution. Normalize only names owned by the reconstruction; map them explicitly to the original names.
 - **Separate the two passes:** Pass 2 must be a genuine independent rebuild, not a cleanup or rename of Pass 1.
 - **Portable by construction:** the core capability must not require the original vendor, model provider, agent framework, or destination host unless that dependency is intrinsic to the behavior. Put unavoidable integrations behind optional, documented adapters.
+- **Credentials are not a default prerequisite:** local discovery, parsing, validation, imports, CLI practice, tests, and artifact generation must work without provider API keys, GitHub tokens, or cloud credentials whenever the behavior can be exercised locally. Require credentials only for source operations that intrinsically need the external service. Never manufacture a credential dependency for a public source or locally testable capability.
+- **Importable SDK/package interface first:** when the output contains executable reusable functionality, expose a stable importable library interface before adding a CLI or host adapter. The CLI must be a thin caller of that public interface, not the only way to use the capability. Follow the destination language's package conventions. For Python, use normal package imports, pathlib.Path for filesystem paths, and package-relative/resource-safe resolution. Do not rely on ad hoc sys.path mutation, an assumed current working directory, or undocumented PYTHONPATH settings. os.environ may supply optional adapter configuration, but the core must have working local defaults when credentials are absent.
 - **A placeholder is not an adapter:** names such as {{HOST_NAME}} or {{RESOURCE_ROOT}} may appear in templates and setup documentation, but executable code must have usable defaults and must not require unresolved placeholders to run.
 - **No invented execution:** distinguish native execution, controlled replay, static inspection, and blocked execution.
 - **No silent authority transfer:** a skill may explain or perform its assigned capability but cannot grant itself permissions, bypass approval, or take ownership of the host workflow.
@@ -264,6 +266,47 @@ The agent may revisit the original source and official documentation. It must no
 9. Do not claim that a SKILL.md file alone is executable on every agent platform. Host loading and tool execution require compatible runtime support or an adapter.
 10. Include a short README with purpose, prerequisites, installation/use, CLI practice, limitations, and source attribution.
 
+### Credential-free execution and SDK-first interface
+
+Separate local functionality from external-service functionality.
+
+- The default path must not ask for an API key. Local code inspection, parsing, transformations, filesystem operations, validation, fixtures, tests, packaging, and CLI execution must work offline when they do not inherently require a remote service.
+- If the original cookbook calls a provider API, preserve that API only inside an optional adapter. Without credentials, still run a faithful local replay or deterministic fake at the external boundary and label it replay, not native execution. Native execution may be blocked; that must not block the portable implementation pack.
+- Public repositories must not be forced to use a GitHub token. Add authentication only where access control actually requires it.
+- Never include real secrets in generated files, fixtures, environment dumps, logs, example commands, or prompts. Environment variables may configure optional adapters; ANTHROPIC_API_KEY, OPENAI_API_KEY, GITHUB_TOKEN, and similar must not become universal prerequisites.
+
+When executable reusable code is justified, make its SDK/package API the primary developer interface:
+
+1. Identify the public operations callers need and implement them in an importable package/module with explicit inputs, return values, and errors.
+2. Keep vendor-specific SDK calls in a separate optional adapter. The portable package must not import the vendor SDK at module import time.
+3. Make the CLI a thin entry point that calls the same public package API. Do not duplicate implementation inside the CLI.
+4. Include a root-level import example and a separately installed-package example.
+5. Resolve files from an explicit repository/package root or package resources, not from the process's incidental current directory.
+6. For Python, use ordinary imports such as: from repo_skill_registry import SkillCatalog. Use pathlib.Path for paths. Do not create a fake import-path module or use sys.path.insert(...) as a packaging substitute.
+7. Verify imports and CLI use from the repository root and from an unrelated working directory after installation.
+
+If the source is inherently an instruction-only skill with no executable reusable behavior, do not invent a library just to satisfy this rule. State why an SDK wrapper is not applicable. Otherwise, an importable package API is mandatory.
+
+### Mandatory Agent Implementation Pack
+
+Every pre-write run that proposes executable implementation must finish with a concrete Agent Implementation Pack. This is a required deliverable, not an optional report format. Generate actual files and an implementation skeleton, not only a description of what someone could build.
+
+The pack must include:
+
+- SOURCE_MAP.md: pinned source identity, exact relevant paths/cells/symbols, provenance, license status, and source-to-output mapping.
+- BEHAVIOR_CONTRACT.md: required observable behavior, inputs/outputs, state/lifecycle, boundaries, and black-box acceptance cases.
+- SDK_TRACE.md: actual public SDK calls, versions, import paths, wrapper/transport call chain where inspectable, event or return shapes, errors, and source evidence. If no SDK is involved, explain the module/API boundary.
+- WEAKNESS_REPORT.md: evidence, expected vs observed behavior, cause, impact, correction, and regression coverage. Do not invent findings.
+- IMPLEMENTATION_GUIDE.md: exact target file tree, each file's responsibility, public package API, imports, path/resource rules, data flow, optional adapter boundary, setup, and implementation order.
+- AGENT_IMPLEMENTATION_PROMPT.md: a self-contained, copy/paste-ready task for the next coding agent. Specify the target, scope, exact files to create/change, public imports and API signatures, required behavior, tests, commands, acceptance criteria, prohibited shortcuts, and evidence to return. The agent must not need this conversation or reconstruct the handoff from the other documents.
+- artifacts/: actual portable source package/module, SDK wrapper, skill/instructions, fixtures, and tests as appropriate. Do not leave pseudocode or empty placeholder files where working code can be produced.
+- RUN_REPORT.md: exact commands, working directories, dependency setup, credentials present/absent, execution mode, test outputs, packaging/import checks, and untested or blocked items.
+- README.md: quick start, import-first usage, CLI usage, offline behavior, optional integrations, and limitations.
+
+Include a CLI only when it adds a useful human/automation entry point. The importable SDK/package API is primary when executable code exists. The implementation prompt must reference generated paths and remain usable on its own; linked reports are supplemental, not a substitute for complete instructions.
+
+If no executable artifact is justified, produce an instruction-only implementation pack with a complete AGENT_IMPLEMENTATION_PROMPT.md, source/behavior evidence, and an explicit explanation that an SDK wrapper is not applicable.
+
 ### Choose the right deliverable
 
 Do not force every cookbook into a skill.
@@ -292,6 +335,10 @@ Verify:
 - A failure/negative case.
 - Resource and path resolution from a different working directory where relevant.
 - No undeclared dependency on the original SDK or host.
+- Import the public package API from the repository root using documented imports.
+- Install the package into an isolated target/environment and import it from an unrelated working directory.
+- Run the local/core behavior with provider and GitHub credential variables absent; prove that no credential prompt or vendor SDK import occurs.
+- Verify that the CLI delegates to the same public package API.
 - Regression tests for each Pass 1 weakness.
 - Packaging and resource inclusion.
 - A fresh agent can discover and use the skill, where a skill-capable host is available.
@@ -328,21 +375,38 @@ Classify each idea:
 - **REJECT:** conflicts with requirements, security, or existing architecture.
 - **DEFER:** useful but outside current scope or priority.
 
-## Final deliverables
+## Final deliverables — mandatory Agent Implementation Pack
 
-Keep outputs concise and proportionate. Use the target project's existing artifact conventions. A typical exercise may produce:
+The Agent Implementation Pack described above is required whenever implementation is proposed. Generate the actual files in a clearly bounded output directory and provide a ZIP when the workspace supports it.
 
-1. **Source map:** exact source identity and relevant file/symbol/cell references.
-2. **Behavior contract:** observable behavior and acceptance cases.
-3. **SDK trace:** relevant versions, public calls, lifecycle, and implementation evidence.
-4. **Pass 1 sample:** isolated runnable reconstruction and its source mapping.
-5. **Execution report:** commands, mode, results, and limitations.
-6. **Weakness report:** evidenced defects, corrections, and regression tests.
-7. **Pass 2 capability:** independently rebuilt portable package or skill.
-8. **Verification report:** CLI, tests, activation, portability, and unresolved limitations.
-9. **Integration map:** borrowed idea → invariant → owner → test, with disposition.
+Minimum handoff contract:
+1. Source and behavior evidence must be specific enough to prevent the next agent from guessing.
+2. The implementation guide must show the exact package/file layout and ownership boundaries.
+3. The public SDK/package interface must be named with concrete imports and signatures. Show how to import from the repository root and after installation.
+4. The CLI, if present, must call the public package interface.
+5. Local/core commands must run without API keys. Any unavoidable remote operation must be isolated, optional, and explicitly marked.
+6. The prompt must be complete enough to paste into another coding agent without requiring this conversation.
+7. Include real code, fixtures, and tests in artifacts/; do not substitute architecture prose for implementation.
+8. Include exact verification evidence and honest limitations. Distinguish native execution, replay, static inspection, and blocked execution.
 
-Do not create empty files just to satisfy this list. If an artifact is unnecessary, explain why.
+A typical output tree is:
+
+    implementation-pack/
+    ├── README.md
+    ├── SOURCE_MAP.md
+    ├── BEHAVIOR_CONTRACT.md
+    ├── SDK_TRACE.md
+    ├── WEAKNESS_REPORT.md
+    ├── IMPLEMENTATION_GUIDE.md
+    ├── AGENT_IMPLEMENTATION_PROMPT.md
+    ├── RUN_REPORT.md
+    └── artifacts/
+        ├── <importable-package>/
+        ├── skills/                 # when a skill is part of the result
+        ├── fixtures/
+        └── tests/
+
+Only include directories that contain real deliverables. Keep optional provider/host adapters separate from the credential-free core. Do not create empty report files to satisfy this list; explain genuinely inapplicable artifacts in README and the prompt.
 
 ## Status and reporting rules
 
