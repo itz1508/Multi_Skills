@@ -1,63 +1,83 @@
-# Remotion Video Skill
+---
+name: remotion_video
+description: Scaffold, preview, and render code-defined videos with Remotion and React. Use when the user needs programmatic compositions; render only after an explicit export request.
+---
 
-## Purpose
+# Remotion Video
 
-Programmatic video creation via Remotion — React compositions rendered to MP4/WebM. Complements video_generator (AI generation via belt CLI). This skill handles code-based video: React code defines compositions, Studio previews in real-time, render exports to file.
+> Create video compositions as React code, preview them in Remotion Studio, and render only when the user explicitly requests an export.
 
-## Entry Point
+## When to use
 
-```bash
-uv run --no-sync python -m agent.skills.remotion_video.run <repository-root>
-# Scaffold:
+Use for code-driven video where React components define scenes, timing, transitions, and composition. Use [video_generator](../video_generator/SKILL.md) for model-generated footage, and [ffmpeg_media](../ffmpeg_media/SKILL.md) for post-processing an existing file.
+
+## Ownership and boundaries
+
+- Owns Remotion project scaffolding, Studio preview, and composition rendering.
+- Does not own AI video generation.
+- Scaffolding and rendering invoke npx subprocesses. The consuming host must authorize package execution and validate resulting files.
+- Never render or overwrite an existing output unless the user explicitly requests that export and replacement is authorized.
+
+## Prerequisites and installation
+
+- Node.js 18 or newer and npx.
+- A consuming project with the Remotion package dependencies installed.
+- In the consuming Python host, place this package at agent/skills/remotion_video/; the hook entrypoint also expects agent.contracts.host, which is not included in this repository.
+- The code in this library is not an independently installable Python package.
+
+## Importable operations
+
+~~~python
+from agent.skills.remotion_video.tools.scaffold import scaffold_project
+from agent.skills.remotion_video.tools.studio import start_studio
+from agent.skills.remotion_video.tools.render import render_video
+~~~
+
+| Function | Inputs | Result |
+|---|---|---|
+| scaffold_project(target_dir, blank=True, no_tailwind=True) | Destination directory and scaffold options | Status/evidence dict |
+| start_studio(project_dir, open_browser=False) | Existing Remotion project | Starts a long-running Studio process and returns initial status/URL evidence |
+| render_video(composition_id, output_path, project_dir, codec="h264", quality=80) | Composition ID, destination, project root, codec/quality | Status/evidence dict |
+
+tools/__init__.py does not currently re-export these functions. Import from the concrete modules shown above.
+
+## Procedure
+
+1. Inspect the target repository's package manager, Node version, Remotion version, and current project tree.
+2. If no Remotion project exists, confirm the destination is safe and obtain authorization before scaffolding. create-video@latest can download and execute package code.
+3. Start Studio and review the composition before rendering.
+4. Make changes without overwriting user-authored components or assets.
+5. Render only after an explicit request such as "render," "export," or "give me the MP4."
+6. Verify the output file, codec, duration, dimensions, and expected composition.
+
+## Commands
+
+~~~bash
 npx create-video@latest --yes --blank --no-tailwind .
-# Preview (always first):
 npx remotion studio --no-open
-# Render (only when explicit):
 npx remotion render <composition-id> out/video.mp4
-```
+~~~
 
-## Tools
+Run commands from the consuming Remotion project root, not from the Multi_Skills repository root.
 
-- `scaffold` — Create new Remotion project via `npx create-video`
-- `studio` — Start Remotion Studio preview server (always before rendering)
-- `render` — Export composition to video file (only on explicit user request)
+## Entry point behavior
 
+run.py checks for Node.js/npx and prints the scaffold, preview, and render commands. It does not call the three operation functions or execute the video workflow.
 
+## Outputs and verification
 
-| Tool | Inputs | Outputs |
-|------|--------|---------|
-| `scaffold` | target_dir, blank, no_tailwind | Project dir with package.json, Root.tsx |
-| `studio` | project_dir, open_browser | Long-running preview server URL |
-| `render` | composition_id, output_path, project_dir, codec, quality | Video file (MP4/WebM/GIF) |
+- Scaffolded React/Remotion project when requested.
+- Preview server URL/status from Studio.
+- Rendered MP4/WebM/GIF file when explicitly requested.
+- Host integration expects a video_record or build_record reference. The consuming host must independently check the output file and media metadata.
 
-## Output
+## Failure handling
 
-- `ArtifactRef` to rendered video (contract `video_record`, v1.0)
-- Execution evidence: npx exit code, output file size, codec, duration
-- Disposition: `completed` / `blocked` (missing npx/Node.js) / `not_run`
+- Missing Node.js or npx: report blocked.
+- Scaffold install or render subprocess error: return the actual stderr/exit status.
+- Studio not started or composition not reviewed: do not proceed to render.
+- Render not explicitly requested: leave the project at preview/review; do not export.
 
-## Ownership
+## Next steps
 
-Runtime-authorized programmatic video creation, scoped to `npx` subprocess calls. Never fabricates video bytes; all output is Remotion-rendered files. Complements video_generator — does not replace AI generation.
-
-## Responsibilities
-
-- Scaffold Remotion projects with `create-video`
-- Start Studio preview before building or rendering (Studio-first workflow)
-- Render compositions to MP4/WebM/GIF on explicit user request only
-- Route to reference files by intent: create → create-video.md, render → rendering.md, markup → markup.md, captions → captions.md, maps → maps.md
-
-## Runtime Integration
-
-- Reports through `HostDispatchResult` with `video_record` contract
-- Never issues trusted receipts; host validates output file existence and size
-- Host binds approval for outbound npx calls (default_deny)
-
-## Constraints
-
-- Requires Node.js >=18 and npx on PATH — without them, disposition `blocked`
-- Studio-first: never render without previewing first
-- Render only when user is very explicit ("Render", "Export", "Give me the MP4")
-- Preserve user changes: don't overwrite edits made outside the conversation
-- Max composition duration depends on system resources
-- Different from video_generator: code-based creation vs AI generation
+Scaffold only when needed, preview the composition, and wait for explicit export authorization before rendering.

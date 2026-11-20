@@ -69,3 +69,7 @@ Report mode, exact target, archival identifiers, source inventory, mutation scop
 - Prefer bounded, idempotent, approved changes; keep append-only correction history where the underlying store supports it.
 
 Related capabilities: [session-search](../session-search/SKILL.md) retrieves history; [memory-bridge](../memory-bridge/SKILL.md) compares origins; [cross-linker](../cross-linker/SKILL.md) proposes relationships. [Provenance](../SOURCES.md).
+
+## Next steps
+
+Start in read-only inspect mode. Propose an archive or restore plan with exact paths and recovery evidence; request separate authorization before any live replacement or deletion.

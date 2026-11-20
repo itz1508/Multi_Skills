@@ -1,72 +1,86 @@
-# Video Generator Skill
+---
+name: video_generator
+description: Generate or transform video through authenticated belt model calls or a local deterministic motion pipeline. Use belt for model-generated footage and motion for code-driven UI/data animation.
+---
 
-## Purpose
-Dual-mode video generation: (1) AI video via inference.sh belt CLI (Veo 3.1, Seedance 2.0, HappyHorse, Wan 2.5, Grok Imagine, OmniHuman, Fabric, HunyuanVideo), and (2) code-driven deterministic motion via the seek(t) frame pipeline (Playwright + ffmpeg) for UI motion, data stories, typography, and launch explainers.
+# Video Generator
 
-## Modes
+> Choose either authenticated model generation (belt) or the local seek(t) motion pipeline; keep their dependencies, network behavior, and evidence separate.
 
-| Mode | Use Case | Pipeline |
-|------|----------|----------|
-| `belt` | Photoreal scenes, complex characters, organic movement | AI model inference via belt CLI |
-| `motion` | UI motion, data stories, typography, launch explainers | seek(t) → Playwright frames → ffmpeg encode |
+## When to use
 
-## Entry Point
-```bash
-uv run --no-sync python -m agent.skills.video_generator.run <repository-root>
-# Belt mode:
-belt login
-belt app run google/veo-3-1-fast --input '{"prompt": "drone shot flying over a forest"}'
-# Motion mode:
-python -m agent.skills.video_generator.run <repo> --mode motion --brief brief.md --output out/
-```
+Use for AI-generated video, image-to-video, avatar/lip-sync, video editing/upscaling/foley, or deterministic code-driven motion.
 
-## Belt Tools
-- `generate` — Text-to-video via belt app (Veo, HappyHorse T2V, Seedance T2V)
-- `image_to_video` — Animate image to video (Wan 2.5, Seedance I2V, HappyHorse I2V/R2V)
-- `avatar` — Lipsync/avatar animation (OmniHuman, Fabric, PixVerse)
-- `edit` — Natural language video editing (HappyHorse Edit)
-- `upscale` — Video upscaling (Topaz)
-- `foley` — Add sound effects (HunyuanVideo Foley)
-- `merger` — Merge clips with transitions (Media Merger)
+Use [remotion_video](../remotion_video/SKILL.md) when the deliverable is a React/Remotion composition. Use [ffmpeg_media](../ffmpeg_media/SKILL.md) for post-processing an existing media file.
 
-## Motion Tools
-- `render_motion` — Full seek(t) pipeline: HTML → Playwright frames → ffmpeg video
-- `detect_beats` — librosa beat detection for music-synced animation
-- `get_sfx` — Openverse API sound effects search (5.2M+ free assets)
-- `transcribe` — WhisperX word-level timing for captions
-- `contact_sheet` — ffmpeg contact sheet for self-evaluation
-- `critic` — Score rendered frames and identify worst defects
+## Modes and dependencies
 
-## Output
-- `ArtifactRef` to generated video (contract `video_record`, v1.0)
-- Belt mode: belt run ID, model, duration, resolution, pre/post digests
-- Motion mode: frame count, fps, determinism hash, contact sheet path, critic scores
-- Disposition: `completed` / `blocked` (missing deps) / `not_run`
+| Mode | Intended use | External requirements |
+|---|---|---|
+| belt | Prompt-to-video, image-to-video, avatar, edit, upscale, foley | belt CLI, authenticated belt login, network, and the selected remote model/service |
+| motion | UI motion, data stories, typography, beat-synced animation | Playwright/Chromium and ffmpeg; optional librosa, WhisperX and related local models depending on selected tools |
 
-## Ownership
-Runtime-authorized media generation. Belt mode: scoped to bearer-auth belt calls. Motion mode: scoped to local Playwright + ffmpeg + librosa subprocess calls. Never fabricates video bytes.
+Motion rendering can be local, but the overall motion toolbox is not unconditionally offline: get_sfx calls the Openverse API, and model/transcription dependencies may need separate installation or model downloads. Do not describe every motion operation as offline.
 
-## Responsibilities
-- Belt: text-to-video with audio, image-to-video, avatar/lipsync, edit, foley, upscale, merge
-- Motion: deterministic seek(t) rendering, spring physics, beat-synced animation, contact-sheet self-evaluation, 6-gate quality control
+## Ownership and boundaries
 
-## Runtime Integration
-- Reports through `HostDispatchResult` with `video_record` contract
-- Belt mode: host validates belt `artifact_digest`; host binds approval for outbound belt calls (default_deny)
-- Motion mode: host validates determinism hash; no outbound network calls required
+- Belt mode calls the configured belt service through subprocess commands; it does not call an OpenAI or Anthropic SDK directly.
+- Motion mode renders deterministic frames from seek(t) content and encodes them with ffmpeg.
+- The skill does not fabricate media bytes or claim that a generated file is correct without checking its metadata and content.
+- Use only user-provided or explicitly approved media inputs. Do not read an unrestricted repository or upload private assets to a remote model without authorization.
 
-## Constraints
-- Belt mode: requires `belt login` (INFERENCE_SH token) — without it, disposition `blocked`
-- Motion mode: requires Playwright (`npx playwright install chromium`), ffmpeg, and optionally librosa — missing deps yield `blocked`
-- No whole-repository read; only explicit prompt/image/audio URLs or local file paths
-- Max duration/resolution per model table in references/models.md
-- Motion mode: seek(t) must be a pure function of time — no Math.random, setTimeout, or CSS transitions in render mode
-- Motion mode: determinism check required — render frame N twice, hashes must match
+## Host installation
 
-## Motion Pipeline Gates
-1. References and product assets approved
-2. Style guide and shot list approved
-3. Stills for every shot, critiqued
-4. Animatic at 960x540 with placeholder audio
-5. Full pass, polish, sound
-6. Formats, loop check, poster frame, README
+- Place this package at agent/skills/video_generator/ in the consuming project.
+- The host-integrated run.py imports agent.contracts.host, which is not included in this library.
+- This repository does not include a standalone Python distribution manifest for this package.
+
+## Entry point versus operations
+
+run.py is an informational launcher. It prints guidance for belt or motion mode; it does not orchestrate the full generation pipeline. In particular, its current main() does not parse --brief or --output arguments. Do not rely on those flags as working CLI options.
+
+The package's tools/__init__.py re-exports callable tools, including:
+
+- Belt: run_generate, run_image_to_video, run_avatar, run_edit, run_upscale, run_foley.
+- Motion: render_frames, encode_video, render_motion, check_determinism, detect_beats, get_sfx, synthesize_tone, transcribe, format_srt, sync_captions, contact_sheet, phone_test, loop_check, extract_strip, score_criteria.
+
+Use the consuming project's installed module path:
+
+~~~python
+from agent.skills.video_generator.tools import (
+    run_generate,
+    render_motion,
+    check_determinism,
+)
+~~~
+
+## Procedure
+
+1. Confirm mode, final format, aspect ratio, duration, target platform, and source assets.
+2. Confirm input rights and whether any asset may be sent to an external service.
+3. For belt, confirm CLI availability and authentication before invoking a paid/remote model. Record the belt run ID and selected model.
+4. For motion, ensure seek(t) is deterministic; render the same frame twice and compare hashes before encoding.
+5. Review a contact sheet and the worst-scoring frames before final export.
+6. Verify duration, frame rate, dimensions, audio, loop behavior, and output digest as applicable.
+
+## Outputs and evidence
+
+- Video artifact path/reference and output metadata.
+- Belt: model ID, belt run ID, duration, resolution, and available pre/post digests.
+- Motion: frame count, fps, determinism result, contact-sheet path, and critic findings.
+- Host contract: expected video_record reference. The host must independently validate the artifact.
+
+Use dispositions completed, blocked, and not_run accurately. A missing token or tool is blocked, not a successful empty run.
+
+## Motion pipeline checkpoints
+
+1. Approve source references and product assets.
+2. Approve the style guide and shot list.
+3. Generate and critique stills for each shot.
+4. Review the 960x540 animatic with placeholder audio.
+5. Complete motion, polish, and sound.
+6. Verify formats, loop behavior, poster frame, and README.
+
+## Next steps
+
+Choose the mode, confirm its credentials/dependencies and data-sharing boundary, then produce and review a small representative output before final render.

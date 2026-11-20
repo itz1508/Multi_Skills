@@ -1,65 +1,89 @@
-# Particle VFX Skill
+---
+name: particle_vfx
+description: Build and validate Three.js three.quarks particle-effect JSON with Pydantic v2. Use when a project needs particle-system configuration, not rendered video or live GPU preview.
+---
 
-## Purpose
+# Particle VFX
 
-GPU particle effect configuration for Three.js via three.quarks. Builds, validates, and exports JSON files compatible with QuarksLoader.parse(). Uses Pydantic v2 models for type-safe construction of particle systems with 9 emitter shapes, 20 behaviors, and value functions. No overlap with existing skills — unique 3D particle domain.
+> Construct Three.js particle configuration as typed JSON and validate its local structure before loading it in the target renderer.
 
-## Entry Point
+## When to use
 
-```bash
-uv run --no-sync python -m agent.skills.particle_vfx.run <repository-root>
-# Build effect:
-from agent.skills.particle_vfx.tools.quarks_builder import build_simple_effect
-effect = build_simple_effect(shape=ConeShape().model_dump())
-json_str = effect.to_json()
-# Load in Three.js:
-# new QuarksLoader().parse(JSON.parse(json_str))
-```
+Use this skill to build a single-emitter effect or a multi-emitter QuarksPrefab timeline compatible with the target project's three.quarks integration.
 
-## Tools
+Do not use it to render an animation, create a video, or replace the target project's Three.js runtime.
 
-- `quarks_builder` — Pydantic v2 models for ParticleSystem, emitter shapes, behaviors, value types, QuarksPrefab timeline
-- `schema` — Enum classes for ShapeType, BehaviorType, RenderMode, BlendingMode, ValueType
+## Ownership and boundaries
 
+- Owns Pydantic model construction and JSON serialization for particle effects.
+- Produces configuration data; it does not render particles or prove that a browser/GPU renderer accepts the effect.
+- The consuming application owns Three.js, three.quarks, actual loading, rendering, and visual validation.
+- Host dispatch hooks do not replace user authorization or independent artifact checks.
 
+## Prerequisites and installation
 
-| Tool | Inputs | Outputs |
-|------|--------|---------|
-| `build_simple_effect` | shape, start_life, start_speed, emission_rate, duration | QuarksEffect JSON |
-| `build_prefab_effect` | emitters[], animation_entries[], geometries[] | QuarksEffect JSON with timeline |
-| `check_effect_json` | JSON string | bool (valid for QuarksLoader) |
+- Python 3.10 or newer.
+- pydantic >= 2.
+- For actual playback, the consuming Three.js project must install compatible three and three.quarks versions.
+- Place the package at agent/skills/particle_vfx/ in the consuming project.
+- The host-integrated run.py imports agent.contracts.host, which is not supplied by this library.
 
-## Output
+This repository does not include a standalone Python distribution manifest for this package.
 
-- `ArtifactRef` to JSON effect file (contract `vfx_record`, v1.0)
-- Execution evidence: JSON structure, emitter count, behavior count, schema version
-- Disposition: `completed` / `blocked` (missing pydantic) / `not_run`
+## Importable operations
 
-## Ownership
+The source modules provide the builder and structural validator:
 
-Runtime-authorized particle effect construction, scoped to Pydantic model validation and JSON export. Never fabricates particle rendering — all output is configuration JSON for QuarksLoader.parse(). Unique 3D domain, no overlap with video_generator, remotion_video, or ffmpeg_media.
+~~~python
+from agent.skills.particle_vfx.tools.quarks_builder import (
+    ConeShape,
+    build_simple_effect,
+    build_prefab_effect,
+)
+from agent.skills.particle_vfx.checks.valid import check_effect_json
 
-## Responsibilities
+shape = ConeShape().model_dump(by_alias=True)
+effect = build_simple_effect(shape=shape)
+payload = effect.model_dump_json(by_alias=True)
+assert check_effect_json(payload)
+~~~
 
-- Build ParticleSystem configurations with 9 emitter shapes
-- Apply 20 behavior types (SizeOverLife, ColorOverLife, ForceOverLife, etc.)
-- Construct value functions (ConstantValue, ConstantColor, IntervalValue, etc.)
-- Build QuarksPrefab timelines mixing Three.js and particle animations
-- Export Three.js ObjectLoader-compatible JSON with uuid references
-- Validate JSON output matches QuarksLoader.parse() expectations
+| Function | Purpose |
+|---|---|
+| build_simple_effect(...) | Build a single-emitter QuarksEffect |
+| build_prefab_effect(...) | Build a QuarksPrefab effect with emitters and timeline entries |
+| check_effect_json(json_str) | Check local JSON structure and supported shape/behavior/value types |
 
-## Runtime Integration
+Use model aliases when serializing for Three.js JSON (by_alias=True); the models emit camelCase field names expected by the target schema.
 
-- Reports through `HostDispatchResult` with `vfx_record` contract
-- Never issues trusted receipts; host validates JSON structure
-- Host binds approval for particle VFX construction (default_deny)
+## Procedure
 
-## Constraints
+1. Inspect the target project's installed three and three.quarks versions and existing particle assets.
+2. Select an emitter shape and supported behaviors from tools/schema.py.
+3. Build the effect with build_simple_effect or construct emitter nodes and call build_prefab_effect.
+4. Serialize with model_dump_json(by_alias=True).
+5. Run check_effect_json and inspect referenced UUIDs, geometry, material, texture, and image references.
+6. Load the JSON through the target project's QuarksLoader.parse() and run a browser/renderer check before claiming visual correctness.
 
-- Requires `pydantic >=2` for model construction — without it, disposition `blocked`
-- Runtime requires `three` and `three.quarks` in the Three.js project
-- JSON format is Three.js ObjectLoader-compatible (uuid references, matrix arrays, nested geometries/materials/textures)
-- 9 emitter shapes: point, cone, sphere, hemisphere, donut, circle, grid, rectangle, mesh_surface
-- 20 behaviors verified from quarks.core/src/behaviors/
-- Pydantic models handle Three.js conventions (uuid refs, matrix arrays)
-- No overlap with any existing Multi_Skills skill
+## Outputs and verification
+
+- A QuarksEffect model or serialized JSON payload.
+- Structural validation result from check_effect_json.
+- In the consuming host, an expected vfx_record or build_record artifact reference.
+
+The local validator checks structure and declared enums. It is not a call to QuarksLoader.parse() and does not prove successful GPU rendering. Record the target Three.js version, loader result, and a visual check separately.
+
+## Entry point behavior
+
+run.py is informational: it verifies the supplied repository path and prints supported shapes, value types, and builder usage. It does not create an effect or run the Three.js loader.
+
+## Failure handling
+
+- Missing Pydantic: report blocked.
+- Unsupported enum/value or malformed JSON: report not_valid with the offending field/path.
+- No target Three.js/three.quarks test: report renderer compatibility as not_run, not valid by implication.
+- Do not present configuration JSON as a rendered effect.
+
+## Next steps
+
+Build the smallest representative effect, validate its serialized JSON, then load it in the target project's actual QuarksLoader and record the result.

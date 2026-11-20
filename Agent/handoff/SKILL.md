@@ -70,3 +70,7 @@ A fresh agent can identify (1) the current task, (2) what may be changed, (3) wh
 ## Origin
 
 Rewritten from the `handoff` concept in https://github.com/mattpocock/skills; adapted for source-grounded OneShot/BreakDown continuity. Not a claim of compatibility testing with upstream CLI.
+
+## Next steps
+
+The receiving agent should verify the recorded repository, branch, revision, and bootstrap instructions, then continue the listed next action without re-planning completed work.

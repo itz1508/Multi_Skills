@@ -1,67 +1,95 @@
-# FFmpeg Media Skill
+---
+name: ffmpeg_media
+description: Probe, trim, mux, and transcode local audio/video files with ffmpeg and ffprobe. Use for deterministic media post-processing, not AI generation or React composition authoring.
+---
 
-## Purpose
+# FFmpeg Media
 
-CLI-level multimedia processing via ffmpeg/ffprobe: probe metadata, trim segments, mux audio, transcode to web-safe formats. All operations use safe subprocess wrappers (no shell injection). Complements video_generator (AI generation) and remotion_video (code-based creation). This skill handles post-processing.
+> Post-process existing local media with bounded ffmpeg/ffprobe commands and verify the resulting file.
 
-## Entry Point
+## When to use
 
-```bash
-uv run --no-sync python -m agent.skills.ffmpeg_media.run <repository-root>
-# Probe:
+Use this skill to inspect media metadata, trim a segment, combine audio and video streams, or transcode a file to a web-compatible MP4.
+
+Do not use it to generate video from prompts, author React/Remotion compositions, or create particle effects. Use [video_generator](../video_generator/SKILL.md) for AI/motion generation and [remotion_video](../remotion_video/SKILL.md) for programmatic compositions.
+
+## Ownership and boundaries
+
+- Owns local media probing and post-processing only.
+- Uses ffmpeg and ffprobe subprocesses with argument arrays; it does not use shell=True.
+- Does not generate media bytes by itself and does not issue trusted execution receipts.
+- The consuming host must approve process execution and independently validate the output artifact.
+
+## Prerequisites and installation
+
+- Python 3.10 or newer for the supplied modules.
+- ffmpeg and ffprobe installed and available on PATH.
+- In a consuming project, place this package at agent/skills/ffmpeg_media/.
+- The host-integrated entrypoint imports agent.contracts.host. That contract is not included in this skill library; install only into a project that supplies the expected host interface.
+
+This repository does not include a standalone Python distribution manifest for this package.
+
+## Entry point versus operations
+
+run.py is an informational preflight entrypoint: it checks whether ffmpeg and ffprobe are on PATH and prints example commands. It does not dispatch probe, trim, mux, or transcode operations.
+
+The reusable operations are in tools/ffmpeg_ops.py:
+
+~~~python
+from agent.skills.ffmpeg_media.tools.ffmpeg_ops import (
+    probe_media,
+    trim_video,
+    mux_audio,
+    transcode_web_mp4,
+)
+~~~
+
+| Function | Inputs | Result |
+|---|---|---|
+| probe_media(input_path) | Local media path | Dict with status and ffprobe metadata |
+| trim_video(input_path, output_path, start="00:00:00", end=None, copy=True) | Source, destination, time range | Dict with execution status and output evidence |
+| mux_audio(video_path, audio_path, output_path) | Video, audio, destination | Dict with execution status and output evidence |
+| transcode_web_mp4(input_path, output_path, crf=23, preset="medium") | Source, destination, encoder quality/speed | Dict with execution status and output evidence |
+
+The status field is an operation result (completed, error, or blocked); it is not a substitute for host-level artifact validation.
+
+## Procedure
+
+1. Confirm the input paths, intended output path, and operation.
+2. Check that the source files exist and inspect relevant streams with probe_media.
+3. Choose the least destructive operation:
+   - use stream copy when re-encoding is unnecessary;
+   - transcode only when codec, pixel format, or container compatibility requires it.
+4. Execute the operation through the supplied function or an explicitly approved command.
+5. Verify the output exists, is non-empty, and can be probed. Check codec, duration, resolution, and audio/video streams against the request.
+
+Stream-copy trimming avoids re-encoding, but cut positions can be constrained by keyframes; do not promise frame-exact cuts without checking the produced file.
+
+## Command examples
+
+~~~bash
 ffprobe -v quiet -print_format json -show_format -show_streams input.mp4
-# Trim:
 ffmpeg -i input.mp4 -ss 00:01:00 -to 00:02:00 -c copy output.mp4
-# Transcode:
-ffmpeg -i input.mp4 -c:v libx264 -pix_fmt yuv420p -c:a aac output.mp4
-```
+ffmpeg -i input.mp4 -c:v libx264 -pix_fmt yuv420p -c:a aac -movflags +faststart output.mp4
+~~~
 
-## Tools
+Run commands only after confirming the selected input and output paths. Preserve argument-list subprocesses when adding wrapper operations.
 
-- `probe` — Inspect media metadata via ffprobe JSON output
-- `trim` — Lossless segment extraction via -ss/-to -c copy
-- `mux` — Combine video + audio streams via -map -c copy
-- `transcode` — Re-encode to web-safe MP4 (libx264, yuv420p, aac)
+## Outputs and verification
 
+- Probe result: input path plus parsed format and stream metadata.
+- Processing result: operation status, output path/evidence, and stderr when available.
+- Host artifact contract: expected media_record, video_record, or build_record reference. The current post_dispatch hook checks artifact identity and contract ID; the consuming host must still verify file existence, size, and media metadata independently.
 
+Report the exact command/function, exit or operation status, output path, codec, duration, and checks not performed.
 
-| Tool | Inputs | Outputs |
-|------|--------|---------|
-| `probe` | input_path | dict with format, streams (codec, resolution, fps, duration) |
-| `trim` | input_path, output_path, start, end, copy | Trimmed video file |
-| `mux` | video_path, audio_path, output_path | Muxed video file with both streams |
-| `transcode` | input_path, output_path, crf, preset | Web-safe MP4 file |
+## Failure handling
 
-## Output
+- Missing ffmpeg or ffprobe: report blocked; do not silently skip processing.
+- Non-zero subprocess exit: report error and the relevant stderr.
+- Invalid or empty output: do not report the operation as completed.
+- Never overwrite an input or existing user output unless the user explicitly authorized replacement.
 
-- `ArtifactRef` to processed media (contract `media_record`, v1.0)
-- Execution evidence: ffmpeg exit code, output file size, codec, duration
-- Disposition: `completed` / `blocked` (missing ffmpeg/ffprobe) / `not_run`
+## Next steps
 
-## Ownership
-
-Runtime-authorized media processing, scoped to `ffmpeg`/`ffprobe` subprocess calls with argument lists. Never uses shell=True. Never fabricates media bytes. Complements video_generator and remotion_video.
-
-## Responsibilities
-
-- Probe media files for metadata (codec, resolution, fps, duration, bitrate)
-- Trim video segments losslessly (-c copy)
-- Mux video and audio streams into one container
-- Transcode to web-safe MP4 (libx264, yuv420p, aac, faststart)
-- Validate safe encoding flags before execution
-
-## Runtime Integration
-
-- Reports through `HostDispatchResult` with `media_record` contract
-- Never issues trusted receipts; host validates output file existence and size
-- Host binds approval for outbound ffmpeg/ffprobe calls (default_deny)
-
-## Constraints
-
-- Requires `ffmpeg` and `ffprobe` on PATH — without them, disposition `blocked`
-- Install: `apt install ffmpeg` | `brew install ffmpeg` | build from source
-- All subprocess calls use argument lists, never shell=True (no shell injection)
-- Always use `-pix_fmt yuv420p` for web compatibility
-- Always use `-movflags +faststart` for streaming
-- Use `-c copy` for trim/mux when no re-encoding is needed
-- New wrapper work — FFmpeg repo has no Python bindings
+Probe the source first, perform only the requested transformation, then validate the output media before handing back its path and evidence.

@@ -1,55 +1,92 @@
-# UIX Designer Skill
+---
+name: uix_designer
+description: Search the local UI/UX reference dataset, assemble design-system guidance, validate reference data, and audit web-interface guidelines. Use for design research and review, not as proof that an interface is implemented or accessible.
+---
 
-## Purpose
-Unified UI/UX design intelligence — merges **ui-ux-pro-max** (80 styles, 192 palettes, 74 font pairings, 120 UX guidelines), **canvas-design** (visual philosophy + canvas rendering), and **web-design-guidelines** (Vercel a11y/perf checks) without overlap.
+# UIX Designer
 
-## Entry Point
-```bash
-uv run --no-sync python -m agent.skills.uix_designer.run <repository-root>
-# UI/UX search:
-uv run python agent/skills/uix_designer/tools/search.py "keyboard focus modal" --domain ux
-# Canvas:
-# -> Generates philosophy .md + art .pdf/.png via canvas-design
-# Web guidelines:
-curl https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md
-```
+> Use the local UI/UX reference corpus to inform design decisions, then validate the actual interface against current guidance and target-platform constraints.
 
-## Tools
-- `search` — Query ui-ux-pro-max local DB (styles, palettes, typography, charts) via `tools/search.py`
-- `design_system` — Generate design system via `tools/design_system.py --design-system -p "<project>"`
-- `canvas_philosophy` — Create visual philosophy (art movement) → render via canvas-design
-- `canvas_render` — Express philosophy to .pdf/.png (from canvas-design)
-- `web_guidelines` — Fetch Vercel guidelines and audit `file:line` findings
-- `validate_data` — Validate ui-ux CSV data integrity
+## When to use
 
-## Output
-- Design system dict/markdown/json + philosophy .md + canvas .pdf/.png
-- `ArtifactRef` with `uix_record` contract
-- Disposition: `completed` / `blocked` (missing data) / `not_valid` (a11y fail)
+Use for UI/UX research, design-system recommendations, token and component guidance, typography and chart selection, reference-data validation, or a web-interface guideline audit.
 
-## Ownership (No Overlap)
-| Capability | Owner in uix_designer | Upstream Source | Not Owned |
+Use the nested [Canvas Design instructions](references/canvas-design-SKILL.md) only when the user requests original static visual artwork. It is a specialist instruction set, not a general UI implementation tool.
+
+## Capabilities and ownership
+
+| Capability | Local owner | Input | Result |
 |---|---|---|---|
-| Tokens, palettes, styles, typography, charts | `tools/search.py` + `tools/design_system.py` | ui-ux-pro-max | Guideline validation |
-| Canvas philosophy + rendering | `tools/canvas_*` | canvas-design | Web UI code |
-| Web a11y/perf/responsive audit | `checks/guideline.py` + `tools/web_guidelines.py` | web-design-guidelines | Token generation |
-| Data validation | `tools/validate_data.py` | ui-ux-pro-max | Canvas fonts |
+| UI/UX search | tools/search.py and tools/core.py | Query, optional domain/stack | Ranked local reference results |
+| Design-system generation | tools/design_system.py | Project brief and stack context | Design-system data/Markdown/JSON |
+| Reference data validation | tools/validate_data.py | Bundled CSV/JSON data | Integrity findings and exit status |
+| Web guideline retrieval | tools/web_guidelines.py and checks/guideline.py | Network access and target files | Current Vercel guideline text and file:line findings |
+| Canvas instructions | references/canvas-design-SKILL.md | User art brief | Design philosophy plus artwork when a compatible renderer is available |
 
-All three sources documented in `references/`; single tool owns each capability.
+The local reference corpus is under references/ui-ux-data/. Use catalog-summary.json and data-provenance.json for dataset counts and provenance; do not hardcode changing counts in this skill.
 
-## Responsibilities
-- Search local UI/UX DB before designing (priority 1-10 table in SKILL.md)
-- Generate design system with project intent + stack detection
-- Create canvas philosophy (4-6 paragraphs, craftsmanship emphasis) then render
-- Audit web UI via fetched guidelines, output `file:line` terse findings
+## Important implementation boundary
 
-## Runtime Integration
-- Reports via `HostDispatchResult` (`uix_record`)
-- Never issues receipts; host validates digests
-- Default deny for outbound fetches (web guidelines, canvas fonts)
+- run.py is a host-integrated informational entrypoint. It prints the package path and suggests the search/design-system tools; it does not run a design task.
+- tools/search.py is the concrete search CLI. Its imports are module-local (core, design_system); use the script entrypoint rather than assuming a stable package-level re-export.
+- tools/__init__.py currently has no public re-exports (__all__ is empty). The package does not yet expose a stable unified SDK facade.
+- tools/canvas.py is a stub: create_philosophy writes a short placeholder Markdown file, and render_canvas writes placeholder text rather than rendering a real PDF or PNG. Do not report a completed canvas artifact from those functions.
+- The nested Canvas Design skill is instruction-only. A host must supply a real image/canvas renderer and validate the resulting PDF/PNG.
 
-## Constraints
-- No fabricated 0-result searches — fallback to priority table with explicit note
-- Canvas fonts from `references/canvas-fonts/` only; no emoji as icons
-- Web guidelines always fetched fresh from Vercel URL, never cached stale
-- Max 5 terms per search query; auto-detect domain, pass `--domain` if misrouted
+## Prerequisites and host integration
+
+- Local search and data validation use files bundled under references/ui-ux-data/; no provider API key is needed for these operations.
+- Web guideline retrieval calls the Vercel raw GitHub URL over HTTPS. It requires outbound network access; if unavailable, report blocked or not_run and do not use stale cached text as current guidance.
+- The host entrypoint imports agent.contracts.host. The consuming project must provide that contract and install this package under agent/skills/uix_designer/.
+- This repository does not include a standalone Python distribution manifest for UIX Designer.
+
+## Entry points
+
+Search:
+
+~~~bash
+python agent/skills/uix_designer/tools/search.py "keyboard focus modal" --domain ux
+~~~
+
+Run from the consuming project's root with the package installed at agent/skills/uix_designer/. Use only supported domains/stacks shown by the tool's own help or local configuration.
+
+Data validation:
+
+~~~bash
+python agent/skills/uix_designer/tools/validate_data.py
+~~~
+
+Design-system generation can be invoked through generate_design_system in tools/design_system.py; confirm the target project's import layout before treating it as a stable public API.
+
+## Procedure
+
+1. Clarify the design target, audience, primary user action, platform, and technical stack.
+2. Search the local reference corpus first. Inspect exact source rows and provenance for consequential recommendations.
+3. Build a design-system proposal that fits the product rather than copying a style recipe mechanically.
+4. Check accessibility, responsive behavior, interaction states, and platform-specific requirements against the target interface.
+5. Fetch current web guidelines when network is available; retain source/version context.
+6. Validate the local dataset when its integrity or freshness is in question.
+7. For static artwork, follow Canvas Design's philosophy-then-art process and use an actual renderer. Verify the final image/PDF opens and has expected page dimensions.
+
+## Outputs and verification
+
+Possible outputs:
+- Search results with query/domain and selected reference rows.
+- Design-system recommendations or generated Markdown/JSON.
+- Dataset validation findings.
+- Web audit findings with exact file:line locations.
+- Canvas philosophy Markdown and a real PDF/PNG only when a rendering capability actually ran.
+
+Report source rows, target stack, guideline retrieval timestamp/revision where available, validator result, and any capability that remained a stub or unavailable.
+
+## Safety and limitations
+
+- Never fabricate search results when the local query returns zero matches. Use a clearly labeled fallback and state that no exact match was found.
+- Keep the query within the documented five-term limit.
+- Use bundled fonts only when their individual licenses permit the intended output. The Canvas Design Apache license does not override separate font/data licenses.
+- Do not use external guideline text as a substitute for testing the actual interface.
+- Do not claim WCAG conformance from a checklist alone; verify the rendered product and relevant assistive-technology behavior.
+
+## Next steps
+
+Search the local corpus, prepare a stack-specific design recommendation, and validate the implementation or generated artifact with the checks that actually ran.

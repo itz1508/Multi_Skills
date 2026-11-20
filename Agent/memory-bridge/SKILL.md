@@ -45,3 +45,7 @@ Use matched, independently labeled fixtures: shared secondary summary, genuinely
 Only existing knowledge sources are compared. No cross-agent broadcast, session ingestion, user-data export, or Runtime mutation is authorized. Use [session-search](../session-search/SKILL.md) to locate original messages and [cross-linker](../cross-linker/SKILL.md) to analyze relationships.
 
 [Provenance](../SOURCES.md).
+
+## Next steps
+
+Report provenance gaps and contradictory origins. Do not merge or persist records; ask for the missing source registry or a specific decision only when it blocks the requested comparison.

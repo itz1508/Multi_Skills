@@ -42,3 +42,7 @@ Use labeled fixtures with near-identical project names, renamed files, repeated 
 - If the session index needs reconstruction, refer to [wiki-build](../wiki-build/SKILL.md) only when that index is part of an actual managed wiki; do not invoke a destructive operation automatically.
 
 Related: [memory-bridge](../memory-bridge/SKILL.md) for origin comparisons, [provenance](../SOURCES.md).
+
+## Next steps
+
+Return the original source references and retrieval status. When a source is unavailable, state that limitation and ask for a more precise identifier only if needed to continue.

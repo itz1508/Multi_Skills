@@ -45,3 +45,7 @@ A bounded table of source ID, candidate target ID, relationship, observed/inferr
 A relationship is not an independent test result, Build Admission, authorization, or trusted approval. The original record and its owning stage remain authoritative. No automatic memory writes or graph persistence without an accepted plan.
 
 Related: [session-search](../session-search/SKILL.md) for locating original statements; [memory-bridge](../memory-bridge/SKILL.md) for cross-tool provenance; [provenance](../SOURCES.md).
+
+## Next steps
+
+Present candidate links with exact source evidence. Keep inferred links as proposals; request authorization for the specific files before making edits.
