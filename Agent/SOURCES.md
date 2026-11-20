@@ -30,3 +30,18 @@ Also consulted: `skills/llm-wiki/SKILL.md` for original vault configuration and 
 The skills preserve their core concepts but are **adaptations**, not verbatim upstream copies. The pinned originals remain available under the corresponding source URLs. The text is reviewed for structural consistency; correct operation against a live OneShot repository, session store, or Obsidian vault is **not tested**.
 
 These instructions do not authorize a new storage schema or change acceptance gates. Any executable adapter would require repository discovery, a Planner-owned implementation proposal, admission, and actual validation.
+ 
+## Canvas Design specialist
+
+- Local path: `uix_designer/references/canvas-design-SKILL.md`
+- Upstream: https://github.com/anthropics/skills/tree/main/skills/canvas-design
+- Pinned upstream repository commit: `e4bb5d960d87126ff3b3a8af1a104b7db67560ba`
+- Upstream SKILL.md Git blob: `9f63fee82de84cd4230e1d0e322247b61eb4c94c`.
+- License: Apache License 2.0, Copyright 2026 Anthropic, PBC. The corresponding upstream LICENSE.txt is included at [uix_designer/references/LICENSE.txt](uix_designer/references/LICENSE.txt).
+- Local changes in this refactor: remove stale user-specific wording, clarify tool/renderer boundaries, add next-step guidance, and preserve source attribution. The Apache license applies to the Canvas Design source; bundled fonts and data retain their own individual license notices.
+
+No upstream source behavior or license is inferred for the other capability packages beyond the sources explicitly listed above.
+
+## Next steps
+
+Before copying another upstream skill or reference into this library, pin its source revision, inspect its license, retain the required notice, record the exact local path/blob, and distinguish a verbatim copy from a local adaptation.

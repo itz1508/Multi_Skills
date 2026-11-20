@@ -1,27 +1,43 @@
-# Standalone agent skills
+# Agent skills and capability sources
 
-> Summary: Independent reusable skill packages. No workflow stages, project orchestration, host adapters, or Build/Audit/Planning runtime integrations are distributed here.
+> Summary: 11 top-level skills plus one nested Canvas Design specialist. Each entry has an explicit trigger, owner, prerequisites, output, verification boundary, and next action.
 
-## Skills
+## Skill catalog
 
-| Standalone skill | Entry point | Purpose |
+| Skill | Entry point | Intended use |
 |---|---|---|
-| Handoff | [handoff/SKILL.md](handoff/SKILL.md) | Prepare and resume a bounded session handoff |
-| Cross Linker | [cross-linker/SKILL.md](cross-linker/SKILL.md) | Identify evidence-backed links and duplicate references |
-| Memory Bridge | [memory-bridge/SKILL.md](memory-bridge/SKILL.md) | Compare provenance of existing records |
-| Pre-Write | [pre-write/SKILL.md](pre-write/SKILL.md) | Reconstruct references, run a faithful sample, diagnose weaknesses, and deliver a credential-free, SDK-first Agent Implementation Pack with a copy-ready coding-agent prompt |
-| Session Search | [session-search/SKILL.md](session-search/SKILL.md) | Retrieve original sessions and bounded source excerpts |
-| Wiki Build | [wiki-build/SKILL.md](wiki-build/SKILL.md) | Inspect or explicitly authorized recovery of an existing knowledge store |
-| UIX Designer | [uix_designer/SKILL.md](uix_designer/SKILL.md) | Independent UI/UX design reference data and tools |
-| Video Generator | [video_generator/SKILL.md](video_generator/SKILL.md) | Video generation and editing resources |
+| Handoff | [handoff/SKILL.md](handoff/SKILL.md) | Preserve verified state and resume a bounded engineering task |
+| Cross Linker | [cross-linker/SKILL.md](cross-linker/SKILL.md) | Assess evidence-backed relationships between existing records |
+| Memory Bridge | [memory-bridge/SKILL.md](memory-bridge/SKILL.md) | Compare source provenance across knowledge projections |
+| Session Search | [session-search/SKILL.md](session-search/SKILL.md) | Retrieve original session messages and bounded excerpts |
+| Wiki Build | [wiki-build/SKILL.md](wiki-build/SKILL.md) | Inspect, archive, rebuild, or restore an existing knowledge index/wiki |
+| Pre-Write | [pre-write/SKILL.md](pre-write/SKILL.md) | Reconstruct technical references and generate a portable Agent Implementation Pack |
+| FFmpeg Media | [ffmpeg_media/SKILL.md](ffmpeg_media/SKILL.md) | Process existing media using ffmpeg/ffprobe |
+| Particle VFX | [particle_vfx/SKILL.md](particle_vfx/SKILL.md) | Build Three.js/three.quarks particle configuration JSON |
+| Remotion Video | [remotion_video/SKILL.md](remotion_video/SKILL.md) | Scaffold, preview, and render programmatic React videos |
+| UIX Designer | [uix_designer/SKILL.md](uix_designer/SKILL.md) | Search design references, produce design guidance, and audit web UI |
+| Video Generator | [video_generator/SKILL.md](video_generator/SKILL.md) | Generate model-based or deterministic motion video |
 
-## Boundaries
+### Nested specialist
 
-- Every skill has its own purpose and supporting files. None establishes a new workflow stage or grants approval, source-write, or Runtime privileges.
-- The pre-write skill is an instruction-only, host-independent process. Its required output is a concrete Agent Implementation Pack; executable capabilities expose an importable package/SDK API first, with a thin CLI and optional provider/host adapters. Local/core work must run without API keys where the behavior permits. The skill itself does not install dependencies, run arbitrary upstream code, or claim that every host can load Agent Skills without an adapter. Its package includes an optional four-screen activation/artifact/handoff storyboard at `pre-write/assets/pre-write-activation-walkthrough.svg` and a compact process-overview GIF at `pre-write/assets/pre-write-workflow.gif`; both are visual aids, while the text instructions remain authoritative for text-only agents.
-- Existing UIX and video Python source files are preserved as distributed. They reference dependencies from their consuming project; this repository does not independently install or verify those dependencies.
-- The dated [handoff example](handoff/CURRENT_HANDOFF.md) is historical context, not the current state of any target repository.
-- Before invoking a skill, inspect the actual target project's instructions, source, access permissions, and dependencies.
-- The four wiki/tracing skills adapt upstream materials; see [source attribution](SOURCES.md) and [license](LICENSE-AR9AV.txt). Handoff records its source in its own SKILL.md.
+- [Canvas Design](uix_designer/references/canvas-design-SKILL.md) — instruction-only workflow for visual philosophy and original static artwork, used through UIX Designer.
 
-Project workflow roles and Audit Discovery/Planner/Builder/Executor implementations belong in the *owning project*, not this standalone skill library.
+## Packaging and execution boundaries
+
+- Instruction-only skills do not require a provider SDK; they do require access to their authorized source material and target repository context.
+- Code-backed packages are source modules, not standalone wheels. In the consuming project they are expected under `agent/skills/<skill>/`.
+- The media/visual package entrypoints import `agent.contracts.host`. This library does not ship that host contract, the host runtime, or a root `pyproject.toml`.
+- Some `run.py` files only print preflight information and command examples. Their callable operation functions live in separate `tools/` modules. Read each `SKILL.md` before treating an entrypoint as an executable CLI.
+- A callable function is not a stable public SDK facade unless the package explicitly exports and documents it. Use the exact imports shown by the skill.
+- Provider credentials and outbound network access are capability-specific. Do not make them prerequisites for unrelated local operations.
+
+## Shared boundaries
+
+- Skills do not create workflow stages or grant approval, source-write, or Runtime privileges.
+- Read the target repository's actual bootstrap, source, dependencies, and authorization rules before installing or invoking any code.
+- Preserve original upstream attribution and license terms for adapted or copied references.
+- Keep generated outputs separate from templates and bundled reference data.
+
+## Next steps
+
+Select one skill from the catalog, read its complete `SKILL.md`, and verify whether the task needs instruction-only guidance or target-host code integration before execution.

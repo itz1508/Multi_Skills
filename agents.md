@@ -168,12 +168,15 @@ and record the source revision when available.
 | Retrieve earlier decisions | `Agent/session-search/SKILL.md` |
 | Compare memory/source provenance | `Agent/memory-bridge/SKILL.md` |
 | Reconcile related records | `Agent/cross-linker/SKILL.md` |
-| UI/UX research and design | `Agent/uix_designer/SKILL.md` |
-| Video work | `Agent/video_generator/SKILL.md` |
+| Preserve/resume engineering context | `Agent/handoff/SKILL.md` |
 | Inspect/recover a knowledge index | `Agent/wiki-build/SKILL.md` |
-| Prepare a technical reference and independently rebuild a portable capability | `Agent/pre-write/SKILL.md` |
-| Session handoff | `Agent/handoff/SKILL.md` |
-
+| Reconstruct technical references and build portable capabilities | `Agent/pre-write/SKILL.md` |
+| Media probe/trim/mux/transcode | `Agent/ffmpeg_media/SKILL.md` |
+| Three.js particle VFX JSON | `Agent/particle_vfx/SKILL.md` |
+| Programmatic React/Remotion video | `Agent/remotion_video/SKILL.md` |
+| UI/UX research and design | `Agent/uix_designer/SKILL.md` |
+| Static visual artwork (nested UIX specialist) | `Agent/uix_designer/references/canvas-design-SKILL.md` |
+| AI or deterministic motion video | `Agent/video_generator/SKILL.md` |
 </details>
 
 Use only relevant skills. Report unavailable skills without claiming activation.
@@ -423,3 +426,7 @@ failure modes, not speculative cases or silent permission fallbacks.
 
 Remove only your own disposable temporary files after preserving required deliverables,
 evidence and recovery material. Never delete unrelated work or user data.
+
+## Next step after reading
+
+Select only the skill relevant to the assignment, read its full entrypoint and referenced material, verify target-host prerequisites, then follow the owning project's authorization and verification rules.
