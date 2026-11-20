@@ -14,7 +14,7 @@ license: Apache-2.0; see LICENSE.txt
 
 Use when the user asks for an original poster, illustration, art object, or other static visual artifact in PDF or PNG form.
 
-Do not use this skill for application screens, product UI, data dashboards, or implementation of React/CSS components. Use [UIX Designer](../../SKILL.md) for interface design and [video_generator](../../video_generator/SKILL.md) or [remotion_video](../../remotion_video/SKILL.md) for animation/video.
+Do not use this skill for application screens, product UI, data dashboards, or implementation of React/CSS components. Use [UIX Designer](../SKILL.md) for interface design and [video_generator](../../video_generator/SKILL.md) or [remotion_video](../../remotion_video/SKILL.md) for animation/video.
 
 ## Inputs and deliverables
 
