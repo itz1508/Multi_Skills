@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">Pre-Write activation and Agent Implementation Pack walkthrough</title>
+<desc id="desc">Four dark UI screens: trigger pre-write, watch source reconstruction and two-pass artifact generation, review generated files, and copy the implementation pack to a coding agent.</desc>
+<defs>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071226"/><stop offset="1" stop-color="#0b1730"/></linearGradient>
+  <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#111f3c"/><stop offset="1" stop-color="#0b162d"/></linearGradient>
+  <linearGradient id="cyan" x2="1" y2="0"><stop stop-color="#18bdf2"/><stop offset="1" stop-color="#547dff"/></linearGradient>
+  <linearGradient id="green" x2="1" y2="0"><stop stop-color="#12c889"/><stop offset="1" stop-color="#42df9b"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#e7f0ff}
+    .muted{fill:#8fa8cc}.cyan{fill:#4bd4ff}.green{fill:#47e0a0}.amber{fill:#ffc66d}
+    .heading{font-size:20px;font-weight:700;letter-spacing:.5px}.small{font-size:13px}.body{font-size:15px}.mono{font-family:Consolas,Menlo,monospace;font-size:12px}.label{font-size:11px;font-weight:700;letter-spacing:1.2px}
+    .panel{fill:url(#panel);stroke:#29456f;stroke-width:1.3}.card{fill:#152544;stroke:#34527f;stroke-width:1}.line{stroke:#2a456d;stroke-width:1}
+  </style>
+</defs>
+<rect width="1200" height="760" fill="url(#bg)"/>
+<rect x="20" y="16" width="1160" height="58" rx="14" fill="#0d1a33" stroke="#2c4973"/>
+<circle cx="43" cy="45" r="7" fill="#7191b9"/><circle cx="67" cy="45" r="7" fill="#7fd5c5"/><circle cx="91" cy="45" r="7" fill="#7191b9"/>
+<text x="123" y="52" font-size="22" font-weight="800" letter-spacing="1">PRE-WRITE</text><text x="268" y="52" font-size="20" class="muted">/</text><text x="294" y="52" font-size="19" font-weight="700">ACTIVATION → ARTIFACTS → AGENT HANDOFF</text><text x="1138" y="50" text-anchor="end" class="label cyan">4 SCREEN WALKTHROUGH</text>
+<!-- Screen 1 -->
+<rect class="panel" x="22" y="92" width="562" height="322" rx="17" stroke="#22bfeF" stroke-width="2.4"/>
+<circle cx="51" cy="122" r="15" fill="url(#cyan)"/><text x="51" y="128" text-anchor="middle" font-size="16" font-weight="800">1</text><text x="78" y="129" class="heading cyan">TRIGGER THE SKILL</text>
+<rect class="card" x="42" y="153" width="522" height="83" rx="12"/>
+<circle cx="72" cy="184" r="14" fill="#1aaee5"/><text x="72" y="189" text-anchor="middle" font-size="13" font-weight="800">U</text>
+<text x="96" y="181" class="small cyan" font-weight="700">YOU</text><text x="96" y="207" class="body">Activate pre-write for this cookbook / repository.</text>
+<rect x="42" y="253" width="522" height="117" rx="12" fill="#142343" stroke="#385b91"/>
+<rect x="60" y="274" width="56" height="56" rx="10" fill="#243e72" stroke="#6c8dff"/><path d="M88 286 L93 299 L106 304 L93 309 L88 322 L83 309 L70 304 L83 299 Z" fill="#c5d5ff"/>
+<text x="136" y="295" font-size="21" font-weight="800">pre-write</text><text x="136" y="319" class="body muted">Reconstruct behavior, trace SDK calls,</text><text x="136" y="341" class="body muted">and generate an implementation pack.</text>
+<rect x="452" y="287" width="90" height="46" rx="10" fill="url(#cyan)" filter="url(#glow)"/><text x="497" y="316" text-anchor="middle" font-size="16" font-weight="800">RUN</text>
+<text x="48" y="397" class="small muted">Input: URL / repository path / notebook / SDK example</text>
+<!-- Screen 2 -->
+<rect class="panel" x="616" y="92" width="562" height="322" rx="17" stroke="#22bfeF" stroke-width="2.4"/>
+<circle cx="645" cy="122" r="15" fill="url(#cyan)"/><text x="645" y="128" text-anchor="middle" font-size="16" font-weight="800">2</text><text x="672" y="129" class="heading">SKILL RUNS AND BUILDS</text>
+<text x="638" y="166" font-size="16" font-weight="700" class="cyan">pre-write · source reconstruction</text>
+<g class="body">
+  <circle cx="650" cy="198" r="9" fill="#1f9c79"/><text x="650" y="203" text-anchor="middle" font-size="12">✓</text><text x="671" y="203">Inspect source + pin revision</text>
+  <circle cx="650" cy="228" r="9" fill="#1f9c79"/><text x="650" y="233" text-anchor="middle" font-size="12">✓</text><text x="671" y="233">Trace imports, SDK + runtime path</text>
+  <circle cx="650" cy="258" r="9" fill="#1f9c79"/><text x="650" y="263" text-anchor="middle" font-size="12">✓</text><text x="671" y="263">Define behavior contract</text>
+  <circle cx="650" cy="288" r="9" fill="#1f9c79"/><text x="650" y="293" text-anchor="middle" font-size="12">✓</text><text x="671" y="293">Pass 1 replay + gap analysis</text>
+  <circle cx="650" cy="318" r="9" fill="#355e9e" stroke="#65d7ff"/><text x="671" y="323">Pass 2 independent rebuild</text>
+  <circle cx="650" cy="348" r="9" fill="#355e9e"/><text x="671" y="353">Generate SDK package + prompt</text>
+</g>
+<rect x="638" y="373" width="498" height="16" rx="8" fill="#1c2d50"/><rect x="638" y="373" width="324" height="16" rx="8" fill="url(#cyan)"/><text x="1137" y="386" text-anchor="end" font-size="13" font-weight="700" class="cyan">65% · generating files</text>
+<!-- Screen 3 -->
+<rect class="panel" x="22" y="438" width="562" height="300" rx="17"/>
+<circle cx="51" cy="468" r="15" fill="url(#cyan)"/><text x="51" y="474" text-anchor="middle" font-size="16" font-weight="800">3</text><text x="78" y="475" class="heading">REVIEW GENERATED ARTIFACTS</text>
+<rect class="card" x="42" y="495" width="522" height="215" rx="12"/>
+<g class="mono">
+  <text x="62" y="521" class="cyan">-  SOURCE_MAP.md</text>
+  <text x="62" y="544">-  BEHAVIOR_CONTRACT.md</text>
+  <text x="62" y="567">-  SDK_TRACE.md</text>
+  <text x="62" y="590">-  WEAKNESS_REPORT.md</text>
+  <text x="62" y="613">-  IMPLEMENTATION_GUIDE.md</text>
+  <text x="62" y="636" font-weight="700" class="cyan">-  AGENT_IMPLEMENTATION_PROMPT.md</text>
+  <text x="62" y="659">-  RUN_REPORT.md</text>
+  <text x="62" y="682">-  README.md</text>
+  <text x="62" y="703" class="green">-  artifacts/  · code + fixtures + tests</text>
+</g>
+<!-- Screen 4 -->
+<rect class="panel" x="616" y="438" width="562" height="300" rx="17"/>
+<circle cx="645" cy="468" r="15" fill="url(#cyan)"/><text x="645" y="474" text-anchor="middle" font-size="16" font-weight="800">4</text><text x="672" y="475" class="heading">COPY THE PACK TO A CODING AGENT</text>
+<rect x="636" y="495" width="312" height="221" rx="11" fill="#070f20" stroke="#38547f"/>
+<text x="653" y="518" class="mono cyan" font-weight="700">implementation-pack/</text>
+<g class="mono">
+<text x="653" y="540">- README.md</text><text x="653" y="558">- SOURCE_MAP.md</text><text x="653" y="576">- BEHAVIOR_CONTRACT.md</text><text x="653" y="594">- SDK_TRACE.md</text><text x="653" y="612">- WEAKNESS_REPORT.md</text><text x="653" y="630">- IMPLEMENTATION_GUIDE.md</text><text x="653" y="648">- AGENT_IMPLEMENTATION_PROMPT.md</text><text x="653" y="666">- RUN_REPORT.md</text><text x="653" y="684">- artifacts/</text><text x="675" y="702" fill="#8fa8cc">- package/src · adapters/ (optional)</text><text x="675" y="718" fill="#8fa8cc">- fixtures/ · tests/</text>
+</g>
+<rect x="963" y="495" width="195" height="145" rx="11" fill="#101f39" stroke="#38547f"/>
+<text x="981" y="520" class="label cyan">READY TO APPLY</text>
+<g class="small"><text x="981" y="550" class="green">✓</text><text x="1001" y="550">Importable SDK first</text><text x="981" y="576" class="green">✓</text><text x="1001" y="576">CLI calls same API</text><text x="981" y="602" class="green">✓</text><text x="1001" y="602">Core runs offline</text><text x="981" y="628" class="green">✓</text><text x="1001" y="628">Tests + acceptance</text></g>
+<rect x="963" y="653" width="195" height="55" rx="10" fill="url(#green)" filter="url(#glow)"/><text x="1060" y="686" text-anchor="middle" font-size="16" font-weight="800" fill="#04241b">COPY PROMPT →</text>
+<text x="600" y="752" text-anchor="middle" font-size="11" class="muted">Illustrative UI walkthrough · written skill instructions and actual generated files are authoritative</text>
+</svg>

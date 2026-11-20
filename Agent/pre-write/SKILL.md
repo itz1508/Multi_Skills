@@ -52,22 +52,28 @@ Do not use merely to summarize an article, answer a conceptual question, or refa
 - **Provenance and licensing:** record source attribution and license constraints. Do not copy substantial upstream code into a new package unless its license and terms permit it. When code reuse is not permitted or unclear, implement from the observed behavior contract and cite the source.
 
 
-## Visual guidance — workflow GIF
+## Visual guidance — activation, artifact generation, and handoff
 
-![Pre-Write workflow: source, inspect, trace, contract, replay, rebuild, package, verify](assets/pre-write-workflow.gif)
+![Pre-Write activation walkthrough: trigger the skill, generate artifacts, review files, and hand off the implementation pack](assets/pre-write-activation-walkthrough.svg)
 
-Use this animation as a quick visual index of the process:
+This four-screen UI mockup illustrates how a user invokes `pre-write`, how the skill progresses through source reconstruction and its two-pass process, what the generated Agent Implementation Pack contains, and how the complete folder is handed to a coding agent.
 
-1. **Source:** identify and pin the original cookbook, repository, notebook, or SDK reference.
-2. **Inspect:** read its actual files, notebook cells, dependencies, and project conventions.
-3. **Trace:** follow the real imports, public SDK calls, call chain, data flow, and lifecycle.
-4. **Contract:** define observable behavior and black-box acceptance cases before implementation.
-5. **Replay:** reconstruct the reference behavior and execute it where possible. Compare the result against the contract and record gaps.
-6. **Rebuild:** independently implement the portable capability from the evidence and gap report, without using Pass 1 as starter code.
-7. **Package:** produce the importable SDK/package API, optional thin CLI/adapters, actual tests, and complete Agent Implementation Pack.
-8. **Verify:** run tests, root and installed imports, CLI from another working directory, and local execution with API credentials absent.
+Screen sequence:
+1. **Trigger the skill:** invoke `pre-write` and provide a cookbook URL, repository path, notebook, SDK example, or technical reference.
+2. **Generate artifacts:** inspect and pin the source, trace imports and SDK calls, define the behavior contract, execute Pass 1 and gap analysis, independently rebuild in Pass 2, and package the result.
+3. **Review generated files:** inspect the source map, behavior contract, SDK trace, weakness report, implementation guide, copy-ready agent prompt, run report, README, and actual `artifacts/` directory.
+4. **Hand off:** copy the implementation pack or its self-contained `AGENT_IMPLEMENTATION_PROMPT.md` to the next coding agent.
 
-The visual compresses the process: gap diagnosis belongs between replay and independent rebuild even though it is not a separate icon. The written instructions and behavior contract are authoritative. An agent that cannot inspect images must follow the numbered text sequence; image viewing is optional and must never be a runtime dependency.
+The folder tree shown is a reference layout. The actual generated tree must follow the target language and repository's real package conventions; for executable capabilities, the importable SDK/package API is primary, with a thin CLI and optional adapters. The core must run without API keys wherever the behavior is locally testable.
+
+This is an illustrative UI mockup, not a screenshot of a connected host, an activation log, or proof that a particular runtime is wired. The written instructions and actual generated files are authoritative. Image viewing is optional and must never be a runtime dependency.
+
+### Process overview
+
+![Pre-Write process overview](assets/pre-write-workflow.gif)
+
+The process overview compresses the eight milestones. Gap diagnosis belongs between Pass 1 replay and Pass 2 independent rebuild even though it is not a separate icon.
+
 ## Phase 0 — Intake and target classification
 
 Record:
