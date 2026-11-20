@@ -18,7 +18,7 @@
 ## Boundaries
 
 - Every skill has its own purpose and supporting files. None establishes a new workflow stage or grants approval, source-write, or Runtime privileges.
-- The pre-write skill is an instruction-only, host-independent process. Its required output is a concrete Agent Implementation Pack; executable capabilities expose an importable package/SDK API first, with a thin CLI and optional provider/host adapters. Local/core work must run without API keys where the behavior permits. The skill itself does not install dependencies, run arbitrary upstream code, or claim that every host can load Agent Skills without an adapter.
+- The pre-write skill is an instruction-only, host-independent process. Its required output is a concrete Agent Implementation Pack; executable capabilities expose an importable package/SDK API first, with a thin CLI and optional provider/host adapters. Local/core work must run without API keys where the behavior permits. The skill itself does not install dependencies, run arbitrary upstream code, or claim that every host can load Agent Skills without an adapter. Its package includes an optional animated workflow GIF at `pre-write/assets/pre-write-workflow.gif`; the text instructions remain authoritative for text-only agents.
 - Existing UIX and video Python source files are preserved as distributed. They reference dependencies from their consuming project; this repository does not independently install or verify those dependencies.
 - The dated [handoff example](handoff/CURRENT_HANDOFF.md) is historical context, not the current state of any target repository.
 - Before invoking a skill, inspect the actual target project's instructions, source, access permissions, and dependencies.

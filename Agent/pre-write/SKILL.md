@@ -51,6 +51,23 @@ Do not use merely to summarize an article, answer a conceptual question, or refa
 - **No unnecessary infrastructure:** reuse suitable tools, SDKs, package conventions, and skill creators. Do not create a new registry, runner, database, framework, or abstraction unless the reference behavior requires it.
 - **Provenance and licensing:** record source attribution and license constraints. Do not copy substantial upstream code into a new package unless its license and terms permit it. When code reuse is not permitted or unclear, implement from the observed behavior contract and cite the source.
 
+
+## Visual guidance — workflow GIF
+
+![Pre-Write workflow: source, inspect, trace, contract, replay, rebuild, package, verify](assets/pre-write-workflow.gif)
+
+Use this animation as a quick visual index of the process:
+
+1. **Source:** identify and pin the original cookbook, repository, notebook, or SDK reference.
+2. **Inspect:** read its actual files, notebook cells, dependencies, and project conventions.
+3. **Trace:** follow the real imports, public SDK calls, call chain, data flow, and lifecycle.
+4. **Contract:** define observable behavior and black-box acceptance cases before implementation.
+5. **Replay:** reconstruct the reference behavior and execute it where possible. Compare the result against the contract and record gaps.
+6. **Rebuild:** independently implement the portable capability from the evidence and gap report, without using Pass 1 as starter code.
+7. **Package:** produce the importable SDK/package API, optional thin CLI/adapters, actual tests, and complete Agent Implementation Pack.
+8. **Verify:** run tests, root and installed imports, CLI from another working directory, and local execution with API credentials absent.
+
+The visual compresses the process: gap diagnosis belongs between replay and independent rebuild even though it is not a separate icon. The written instructions and behavior contract are authoritative. An agent that cannot inspect images must follow the numbered text sequence; image viewing is optional and must never be a runtime dependency.
 ## Phase 0 — Intake and target classification
 
 Record:
