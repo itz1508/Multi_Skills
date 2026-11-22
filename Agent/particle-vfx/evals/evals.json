@@ -1,0 +1,37 @@
+{
+  "skill_name": "particle-vfx",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build a Three.js three.quarks cone-emitter effect with upward velocity, short lifetime and warm gradient; validate the JSON.",
+      "expected_output": "Typed QuarksEffect serialized using camelCase aliases and structurally validated.",
+      "files": [],
+      "expectations": [
+        "Uses Pydantic model/builder and by_alias=True.",
+        "Separates JSON structure from renderer validation.",
+        "Does not claim browser/GPU rendering."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a QuarksPrefab with two emitters at different timeline positions and validate its schema and references.",
+      "expected_output": "Multi-emitter prefab with explicit timeline entries and structural validation.",
+      "files": [],
+      "expectations": [
+        "Uses documented prefab model/builder.",
+        "Checks schema and reference/UUID constraints.",
+        "Identifies loader/browser checks as separate if not run."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Guarantee live GPU rendering in all browsers using only the JSON validator.",
+      "expected_output": "State that the validator cannot prove rendering and name the missing runtime check.",
+      "files": [],
+      "expectations": [
+        "Does not claim a preview or universal compatibility.",
+        "Separates structural validity from visual/runtime validation."
+      ]
+    }
+  ]
+}

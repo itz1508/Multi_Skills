@@ -70,6 +70,12 @@ Report mode, exact target, archival identifiers, source inventory, mutation scop
 
 Related capabilities: [session-search](../session-search/SKILL.md) retrieves history; [memory-bridge](../memory-bridge/SKILL.md) compares origins; [cross-linker](../cross-linker/SKILL.md) proposes relationships. [Provenance](../SOURCES.md).
 
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
+
 ## Next steps
 
 Start in read-only inspect mode. Propose an archive or restore plan with exact paths and recovery evidence; request separate authorization before any live replacement or deletion.

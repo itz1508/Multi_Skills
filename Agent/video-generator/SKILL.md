@@ -1,6 +1,8 @@
 ---
-name: video_generator
+name: video-generator
 description: Generate or transform video through authenticated belt model calls or a local deterministic motion pipeline. Use belt for model-generated footage and motion for code-driven UI/data animation.
+metadata:
+  runtime_package: "video_generator"
 ---
 
 # Video Generator
@@ -11,7 +13,7 @@ description: Generate or transform video through authenticated belt model calls 
 
 Use for AI-generated video, image-to-video, avatar/lip-sync, video editing/upscaling/foley, or deterministic code-driven motion.
 
-Use [remotion_video](../remotion_video/SKILL.md) when the deliverable is a React/Remotion composition. Use [ffmpeg_media](../ffmpeg_media/SKILL.md) for post-processing an existing media file.
+Use [remotion_video](../remotion-video/SKILL.md) when the deliverable is a React/Remotion composition. Use [ffmpeg_media](../ffmpeg-media/SKILL.md) for post-processing an existing media file.
 
 ## Modes and dependencies
 
@@ -80,6 +82,12 @@ Use dispositions completed, blocked, and not_run accurately. A missing token or 
 4. Review the 960x540 animatic with placeholder audio.
 5. Complete motion, polish, and sound.
 6. Verify formats, loop behavior, poster frame, and README.
+
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
 
 ## Next steps
 

@@ -1,6 +1,8 @@
 ---
-name: particle_vfx
+name: particle-vfx
 description: Build and validate Three.js three.quarks particle-effect JSON with Pydantic v2. Use when a project needs particle-system configuration, not rendered video or live GPU preview.
+metadata:
+  runtime_package: "particle_vfx"
 ---
 
 # Particle VFX
@@ -83,6 +85,12 @@ run.py is informational: it verifies the supplied repository path and prints sup
 - Unsupported enum/value or malformed JSON: report not_valid with the offending field/path.
 - No target Three.js/three.quarks test: report renderer compatibility as not_run, not valid by implication.
 - Do not present configuration JSON as a rendered effect.
+
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
 
 ## Next steps
 

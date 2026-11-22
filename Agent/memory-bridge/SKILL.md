@@ -46,6 +46,12 @@ Only existing knowledge sources are compared. No cross-agent broadcast, session 
 
 [Provenance](../SOURCES.md).
 
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
+
 ## Next steps
 
 Report provenance gaps and contradictory origins. Do not merge or persist records; ask for the missing source registry or a specific decision only when it blocks the requested comparison.

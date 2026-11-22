@@ -1,0 +1,38 @@
+{
+  "skill_name": "pre-write",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Adapt a public SDK example into a portable reusable capability: pin source, trace APIs, define behavior, run faithful sample where possible, diagnose gaps, then independently rebuild.",
+      "expected_output": "Source-grounded implementation pack with source map, behavior contract, two-pass evidence and honest execution labels.",
+      "files": [],
+      "expectations": [
+        "Inspects destination architecture and permissions first.",
+        "Separates Pass 1, gap diagnosis and independent Pass 2.",
+        "Reuses existing SDKs/host interfaces instead of unnecessary infrastructure."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Target already has an agent factory; wrap an SDK factory as a thin role-specific factory without rebuilding the runtime.",
+      "expected_output": "Map SDK public factory/capabilities to a small adapter that configures role prompts/tools/output while Host retains authority.",
+      "files": [],
+      "expectations": [
+        "Names actual SDK APIs and return behavior.",
+        "Uses existing factory/runtime rather than duplicating model/tool loops.",
+        "Keeps workflow, approval, authorization and persistence with Host."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Explain an SDK concept only; no implementation, code, sample or package is wanted.",
+      "expected_output": "Answer the conceptual question without forcing the reconstruction workflow.",
+      "files": [],
+      "expectations": [
+        "Recognizes no implementation task was requested.",
+        "Creates no files and runs no code.",
+        "Does not generate an implementation pack."
+      ]
+    }
+  ]
+}

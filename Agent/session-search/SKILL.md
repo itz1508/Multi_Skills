@@ -43,6 +43,12 @@ Use labeled fixtures with near-identical project names, renamed files, repeated 
 
 Related: [memory-bridge](../memory-bridge/SKILL.md) for origin comparisons, [provenance](../SOURCES.md).
 
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
+
 ## Next steps
 
 Return the original source references and retrieval status. When a source is unavailable, state that limitation and ask for a more precise identifier only if needed to continue.

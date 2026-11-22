@@ -1,6 +1,8 @@
 ---
-name: remotion_video
+name: remotion-video
 description: Scaffold, preview, and render code-defined videos with Remotion and React. Use when the user needs programmatic compositions; render only after an explicit export request.
+metadata:
+  runtime_package: "remotion_video"
 ---
 
 # Remotion Video
@@ -9,7 +11,7 @@ description: Scaffold, preview, and render code-defined videos with Remotion and
 
 ## When to use
 
-Use for code-driven video where React components define scenes, timing, transitions, and composition. Use [video_generator](../video_generator/SKILL.md) for model-generated footage, and [ffmpeg_media](../ffmpeg_media/SKILL.md) for post-processing an existing file.
+Use for code-driven video where React components define scenes, timing, transitions, and composition. Use [video_generator](../video-generator/SKILL.md) for model-generated footage, and [ffmpeg_media](../ffmpeg-media/SKILL.md) for post-processing an existing file.
 
 ## Ownership and boundaries
 
@@ -77,6 +79,12 @@ run.py checks for Node.js/npx and prints the scaffold, preview, and render comma
 - Scaffold install or render subprocess error: return the actual stderr/exit status.
 - Studio not started or composition not reviewed: do not proceed to render.
 - Render not explicitly requested: leave the project at preview/review; do not export.
+
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
 
 ## Next steps
 

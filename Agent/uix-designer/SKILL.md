@@ -1,6 +1,8 @@
 ---
-name: uix_designer
+name: uix-designer
 description: Search the local UI/UX reference dataset, assemble design-system guidance, validate reference data, and audit web-interface guidelines. Use for design research and review, not as proof that an interface is implemented or accessible.
+metadata:
+  runtime_package: "uix_designer"
 ---
 
 # UIX Designer
@@ -86,6 +88,12 @@ Report source rows, target stack, guideline retrieval timestamp/revision where a
 - Use bundled fonts only when their individual licenses permit the intended output. The Canvas Design Apache license does not override separate font/data licenses.
 - Do not use external guideline text as a substitute for testing the actual interface.
 - Do not claim WCAG conformance from a checklist alone; verify the rendered product and relevant assistive-technology behavior.
+
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
 
 ## Next steps
 

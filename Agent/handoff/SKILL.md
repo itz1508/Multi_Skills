@@ -1,7 +1,8 @@
 ---
 name: handoff
 description: Create, validate, and resume evidence-grounded engineering handoffs across chat or agent sessions without treating summaries as repository authority.
-version: 2.0.0
+metadata:
+  version: "2.0.0"
 ---
 
 # Handoff — engineering session continuity
@@ -70,6 +71,12 @@ A fresh agent can identify (1) the current task, (2) what may be changed, (3) wh
 ## Origin
 
 Rewritten from the `handoff` concept in https://github.com/mattpocock/skills; adapted for source-grounded OneShot/BreakDown continuity. Not a claim of compatibility testing with upstream CLI.
+
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
 
 ## Next steps
 

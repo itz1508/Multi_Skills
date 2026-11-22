@@ -1,0 +1,38 @@
+{
+  "skill_name": "remotion-video",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a React Remotion 20-second explainer and start Studio for review. Do not export an MP4.",
+      "expected_output": "Scoped project/composition and preview; export remains deferred.",
+      "files": [],
+      "expectations": [
+        "Checks actual Node/package manager/project.",
+        "Does not render or overwrite before explicit export request.",
+        "Reports Studio URL only if server started."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "After reviewing the composition, explicitly render ProductIntro to out/product-intro.mp4 and verify the result.",
+      "expected_output": "Authorized render and post-render file/codec/duration/dimensions checks.",
+      "files": [],
+      "expectations": [
+        "Uses actual project and declared package manager.",
+        "Performs export because explicitly requested.",
+        "Reports artifact evidence beyond command invocation."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Generate source footage from a text prompt using an AI model; no React composition is needed.",
+      "expected_output": "Route to Video Generator.",
+      "files": [],
+      "expectations": [
+        "Does not treat Remotion as AI generation.",
+        "Identifies adjacent Skill.",
+        "Does not run scaffold/render."
+      ]
+    }
+  ]
+}
