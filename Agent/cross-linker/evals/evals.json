@@ -1,0 +1,38 @@
+{
+  "skill_name": "cross-linker",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Compare notes citing source msg-12 and msg-20, where msg-20 explicitly supersedes the rollout in msg-12. Propose supported links only; do not edit.",
+      "expected_output": "A bounded relationship table that distinguishes source-supported from inferred links and makes no edits.",
+      "files": [],
+      "expectations": [
+        "Uses stable source IDs.",
+        "Labels observed versus inferred/ambiguous relationships.",
+        "Does not mutate notes or invent references."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Two notes share a title but point to src-44 and src-91. Determine whether they are duplicates and what evidence is missing.",
+      "expected_output": "A cautious comparison preserving separate identities until source evidence proves equivalence.",
+      "files": [],
+      "expectations": [
+        "Does not merge based on title alone.",
+        "Names missing evidence needed to justify a relationship.",
+        "Remains read-only."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a graph database and rewrite every note using inferred semantic relationships.",
+      "expected_output": "A boundary response declining new storage and bulk writes, and identifying the supported bounded relationship review.",
+      "files": [],
+      "expectations": [
+        "Does not create a database or graph.",
+        "Does not elevate inferred links to verified facts.",
+        "Requires bounded authorization before edits."
+      ]
+    }
+  ]
+}

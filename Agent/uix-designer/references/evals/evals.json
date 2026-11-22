@@ -1,0 +1,38 @@
+{
+  "skill_name": "canvas-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design an original one-page jazz-festival poster: define philosophy, composition, palette, typography, dimensions and render PNG with an approved renderer.",
+      "expected_output": "Brief-specific philosophy and concept, then verified PNG only if a real renderer ran.",
+      "files": [],
+      "expectations": [
+        "Direction is specific to the brief.",
+        "Separates philosophy, concept and rendering.",
+        "Does not claim an artifact without renderer/file evidence."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a responsive React settings page with navigation and form fields; do not create poster art.",
+      "expected_output": "Route application UI work to UIX Designer.",
+      "files": [],
+      "expectations": [
+        "Identifies UI as outside Canvas Design.",
+        "Points to parent UIX Designer.",
+        "Does not render poster artwork."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Verify that an exported poster PDF is readable and report its actual page size; only a screenshot is currently provided.",
+      "expected_output": "Require the actual PDF for reliable file/page-size verification.",
+      "files": [],
+      "expectations": [
+        "Distinguishes image critique from PDF verification.",
+        "Does not infer page size from screenshot.",
+        "Requests/uses the actual artifact."
+      ]
+    }
+  ]
+}

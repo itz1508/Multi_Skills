@@ -46,6 +46,12 @@ A relationship is not an independent test result, Build Admission, authorization
 
 Related: [session-search](../session-search/SKILL.md) for locating original statements; [memory-bridge](../memory-bridge/SKILL.md) for cross-tool provenance; [provenance](../SOURCES.md).
 
+## Evaluation fixtures
+
+`evals/evals.json` contains representative positive, edge, and scope-boundary prompts with observable expectations. These fixtures define what a compatible host should test; their presence does not prove that a host discovered this Skill, invoked it, or executed bundled capabilities.
+
+When changing this Skill, preserve positive cases and adjacent-scope boundary cases. Add cases only for uncovered behavior, and keep expectations tied to observable evidence rather than preferred wording.
+
 ## Next steps
 
 Present candidate links with exact source evidence. Keep inferred links as proposals; request authorization for the specific files before making edits.

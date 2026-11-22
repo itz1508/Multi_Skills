@@ -1,0 +1,38 @@
+{
+  "skill_name": "handoff",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Prepare an engineering handoff for a fresh agent; repository access is available. Record only verifiable current state.",
+      "expected_output": "Handoff with repository/revision, objective, scope, completed work, evidence, blockers and restart actions.",
+      "files": [],
+      "expectations": [
+        "Separates verified, user-reported, decided, proposed and unknown.",
+        "Uses an actual timezone-aware timestamp and observed HEAD.",
+        "Does not invent tests, commits or results."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Old handoff says tests passed, but current checkout differs and no report is present. Reconcile before resuming.",
+      "expected_output": "Current-source reconciliation marking missing test evidence unverified.",
+      "files": [],
+      "expectations": [
+        "Rechecks repository, branch and HEAD.",
+        "Does not reuse stale PASS as current evidence.",
+        "Preserves conflict and a deterministic next step."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write a handoff claiming production deploy and tests succeeded from a chat summary only; no logs or repo are available.",
+      "expected_output": "Handoff that marks deploy/tests NOT_VERIFIED instead of fabricating completion.",
+      "files": [],
+      "expectations": [
+        "Does not fabricate deploy/test outcomes.",
+        "Marks missing sources NOT_VERIFIED.",
+        "States the next verification action."
+      ]
+    }
+  ]
+}

@@ -14,7 +14,7 @@ license: Apache-2.0; see LICENSE.txt
 
 Use when the user asks for an original poster, illustration, art object, or other static visual artifact in PDF or PNG form.
 
-Do not use this skill for application screens, product UI, data dashboards, or implementation of React/CSS components. Use [UIX Designer](../SKILL.md) for interface design and [video_generator](../../video_generator/SKILL.md) or [remotion_video](../../remotion_video/SKILL.md) for animation/video.
+Do not use this skill for application screens, product UI, data dashboards, or implementation of React/CSS components. Use [UIX Designer](../SKILL.md) for interface design and [video_generator](../../video-generator/SKILL.md) or [remotion_video](../../remotion-video/SKILL.md) for animation/video.
 
 ## Inputs and deliverables
 
@@ -86,6 +86,10 @@ Before delivery, ask:
 - Are the hierarchy, contrast, margins, and typography readable?
 - Are borrowed assets licensed and attributed where required?
 - Does the PDF/PNG open and have the expected dimensions?
+
+## Evaluation fixtures
+
+`evals/evals.json` contains positive artwork, UI-boundary, and artifact-verification prompts. These cases define observable expectations; they do not prove that a host invoked this nested Skill or that a renderer produced an artifact.
 
 ## Next steps
 

@@ -1,0 +1,38 @@
+{
+  "skill_name": "video-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Generate a six-second clip with authenticated belt; verify CLI, auth, model, rights and external data-sharing boundary first.",
+      "expected_output": "Bounded remote generation only after prerequisites, with run/model ID and output metadata.",
+      "files": [],
+      "expectations": [
+        "Does not assume credentials/network.",
+        "Does not upload unapproved/private assets.",
+        "Reports model/run/output evidence only after execution."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Create deterministic seek(t) data animation, render frames twice, compare hashes, build contact sheet, review and encode.",
+      "expected_output": "Deterministic frame workflow with review and verified output.",
+      "files": [],
+      "expectations": [
+        "Identifies remote versus local mode and network-dependent tools.",
+        "Checks determinism before encode.",
+        "Reviews frames and verifies output metadata."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build a React Remotion timeline and preview Studio; no AI footage or belt API required.",
+      "expected_output": "Route to Remotion Video.",
+      "files": [],
+      "expectations": [
+        "Recognizes the Remotion scope.",
+        "Does not call belt or motion tools.",
+        "Identifies adjacent Skill."
+      ]
+    }
+  ]
+}

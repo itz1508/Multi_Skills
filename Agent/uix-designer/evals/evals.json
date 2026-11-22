@@ -1,0 +1,38 @@
+{
+  "skill_name": "uix-designer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "For a responsive React analytics dashboard, search local UI/UX references, propose a design system and list checks for the actual screen.",
+      "expected_output": "Evidence-backed design guidance with interface verification separated from recommendation.",
+      "files": [],
+      "expectations": [
+        "Uses actual local corpus and provenance.",
+        "Tailors guidance to React/dashboard context.",
+        "Does not claim WCAG conformance without product/AT evidence."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Audit a web UI against current Vercel guidelines; network may be unavailable and each finding needs file:line.",
+      "expected_output": "Current-source audit with exact locations, or blocked/not_run where retrieval is unavailable.",
+      "files": [],
+      "expectations": [
+        "Checks current guidelines when network works.",
+        "Does not reuse stale cached text as current.",
+        "Reports evidence and static-vs-rendered boundary."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create an original one-page poster and export a PNG; this is not an application UI.",
+      "expected_output": "Route to nested Canvas Design; use an actual renderer or report unavailable.",
+      "files": [],
+      "expectations": [
+        "Selects nested Canvas Design.",
+        "Does not rely on placeholder canvas functions as renderer.",
+        "Does not claim PNG without render and file verification."
+      ]
+    }
+  ]
+}

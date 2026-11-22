@@ -88,7 +88,7 @@ The following could not be tested on serverless compute (no outbound network):
 
 - `OneShot-chat-streaming-refactored.html` — warm theme UI source
 - `oneshot-searching (2).html` — cool theme UI source
-- `Agent/uix_designer/references/motion-library/` — CSS spring, React motion, Vue motion
-- `Agent/uix_designer/references/motion-philosophy/` — Disney's 12 principles, choreography
-- `Agent/video_generator/references/motion-guide.md` — seek(t) contract, springs, gates
-- `Agent/video_generator/references/tool-catalog.md` — 20 motion tools categorized
+- `Agent/uix-designer/references/motion-library/` — CSS spring, React motion, Vue motion
+- `Agent/uix-designer/references/motion-philosophy/` — Disney's 12 principles, choreography
+- `Agent/video-generator/references/motion-guide.md` — seek(t) contract, springs, gates
+- `Agent/video-generator/references/tool-catalog.md` — 20 motion tools categorized

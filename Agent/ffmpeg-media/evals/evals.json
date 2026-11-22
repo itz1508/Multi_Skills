@@ -1,0 +1,38 @@
+{
+  "skill_name": "ffmpeg-media",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Probe a local MP4, trim 00:00:12–00:00:19 to a new output, and determine whether the cut is frame-exact.",
+      "expected_output": "Probe-first operation with post-trim verification and an accurate statement about keyframe-limited stream-copy cuts.",
+      "files": [],
+      "expectations": [
+        "Uses ffprobe before and after.",
+        "Preserves the input unless overwrite is authorized.",
+        "Does not promise frame-exact stream-copy trimming without evidence."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Transcode an existing video to H.264/yuv420p with AAC and fast-start; report duration, dimensions, codecs and output path.",
+      "expected_output": "Bounded transcode followed by output and stream verification.",
+      "files": [],
+      "expectations": [
+        "Uses documented ffmpeg operations or argument-list subprocess.",
+        "Checks output streams/codecs/duration/dimensions.",
+        "Separates operation status from host artifact validation."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Generate AI video from a text prompt; there is no existing media file to process.",
+      "expected_output": "Route prompt-to-video to Video Generator rather than attempting post-processing.",
+      "files": [],
+      "expectations": [
+        "Recognizes the scope boundary.",
+        "Does not claim ffmpeg generates source footage.",
+        "Identifies the adjacent Skill."
+      ]
+    }
+  ]
+}

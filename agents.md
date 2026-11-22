@@ -124,6 +124,8 @@ Prefer official documentation matching installed versions and cite supporting so
 3. Existing SDKs and declared dependencies.
 4. A new implementation only for the demonstrated remaining need.
 
+When the target already has an agent or tool runtime, reuse its public factory and execution lifecycle. Prefer a small role-specific factory (for example, `create_researcher()`) that supplies role instructions, tools, and output contracts over a second model loop or tool executor. Keep workflow, approval, authorization, and persistence with the Host.
+
 </details>
 
 Necessary application logic is allowed within scope. Explain why a new abstraction,
@@ -171,12 +173,12 @@ and record the source revision when available.
 | Preserve/resume engineering context | `Agent/handoff/SKILL.md` |
 | Inspect/recover a knowledge index | `Agent/wiki-build/SKILL.md` |
 | Reconstruct technical references and build portable capabilities | `Agent/pre-write/SKILL.md` |
-| Media probe/trim/mux/transcode | `Agent/ffmpeg_media/SKILL.md` |
-| Three.js particle VFX JSON | `Agent/particle_vfx/SKILL.md` |
-| Programmatic React/Remotion video | `Agent/remotion_video/SKILL.md` |
-| UI/UX research and design | `Agent/uix_designer/SKILL.md` |
-| Static visual artwork (nested UIX specialist) | `Agent/uix_designer/references/canvas-design-SKILL.md` |
-| AI or deterministic motion video | `Agent/video_generator/SKILL.md` |
+| Media probe/trim/mux/transcode | `Agent/ffmpeg-media/SKILL.md` |
+| Three.js particle VFX JSON | `Agent/particle-vfx/SKILL.md` |
+| Programmatic React/Remotion video | `Agent/remotion-video/SKILL.md` |
+| UI/UX research and design | `Agent/uix-designer/SKILL.md` |
+| Static visual artwork (nested UIX specialist) | `Agent/uix-designer/references/canvas-design-SKILL.md` |
+| AI or deterministic motion video | `Agent/video-generator/SKILL.md` |
 </details>
 
 Use only relevant skills. Report unavailable skills without claiming activation.
